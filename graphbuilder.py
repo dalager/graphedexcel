@@ -115,9 +115,16 @@ def visualize_dependency_graph(G, file_path):
 
 
 if __name__ == "__main__":
+
     # Replace 'your_spreadsheet.xlsx' with the path to your Excel file
     #    path_to_excel = "Book1.xlsx"
     path_to_excel = "Book1.xlsx"
+
+    # override with command line argument
+    import sys
+
+    if len(sys.argv) > 1:
+        path_to_excel = sys.argv[1]
 
     # Extract formulas and build the dependency graph
     dependency_graph = extract_formulas_and_build_dependencies(path_to_excel)
