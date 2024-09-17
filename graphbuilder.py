@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 # Regular expression to detect cell references like A1, B2, or ranges like A1:B2
 
 # ignore linting error for regex pattern
-CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"  # pylint: disable=line-too-long
+CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"
 
 
 def extract_formulas_and_build_dependencies(file_path):
@@ -26,7 +26,7 @@ def extract_formulas_and_build_dependencies(file_path):
     graph = nx.DiGraph()
 
     # Iterate over all sheets
-    for sheet_name in wb.sheetnames:  # pylint: disable=too-many-nested-blocks
+    for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
         print(f"-- Analyzing sheet: {sheet_name} --")
 
@@ -121,7 +121,7 @@ def visualize_dependency_graph(graph, file_path):
 
 
 if __name__ == "__main__":
-    path_to_excel = "Book1.xlsx"  # pylint: disable=invalid-name
+    path_to_excel = "Book1.xlsx"
 
     # override with command line argument
     import sys
