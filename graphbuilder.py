@@ -1,3 +1,7 @@
+"""
+This script extracts formulas from an Excel file and builds a dependency graph.
+"""
+
 from collections import Counter
 import re
 from openpyxl import load_workbook
@@ -5,22 +9,24 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 # Regular expression to detect cell references like A1, B2, or ranges like A1:B2
-# CELL_REF_REGEX = r"[A-Z]{1,3}[0-9]+"
-# CELL_REF_REGEX = r"(('?[A-Za-z0-9\s_\-\[\]]+'?![A-Z]{1,3}[0-9]+)|([A-Z]{1,3}[0-9]+))"
-# CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"
-# CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+)"
-CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"
+
+# ignore linting error for regex pattern
+CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"  # pylint: disable=line-too-long
 
 
 def extract_formulas_and_build_dependencies(file_path):
+    """
+    Extract formulas from an Excel file and build a dependency graph.
+    """
+
     # Load the workbook
     wb = load_workbook(file_path, data_only=False)
 
     # Create a directed graph for dependencies
-    G = nx.DiGraph()
+    graph = nx.DiGraph()
 
     # Iterate over all sheets
-    for sheet_name in wb.sheetnames:
+    for sheet_name in wb.sheetnames:  # pylint: disable=too-many-nested-blocks
         ws = wb[sheet_name]
         print(f"-- Analyzing sheet: {sheet_name} --")
 
@@ -48,25 +54,25 @@ def extract_formulas_and_build_dependencies(file_path):
                         if refc not in refs:
                             print(f"  Depends on: {refc}")
                             refs.append(refc)
-                            G.add_edge(cell_name, refc)
+                            graph.add_edge(cell_name, refc)
 
-    return G
+    return graph
 
 
-def summarize_graph(G):
+def summarize_graph(graph):
     """
     Summarize a networkx DiGraph representing a dependency graph.
     """
     # 1. Print basic information about the graph
     print("=== Dependency Graph Summary ===")
-    print(f"Number of nodes (cells): {G.number_of_nodes()}")
-    print(f"Number of edges (dependencies): {G.number_of_edges()}\n")
+    print(f"Number of nodes (cells): {graph.number_of_nodes()}")
+    print(f"Number of edges (dependencies): {graph.number_of_edges()}\n")
 
-    degreeView = G.degree()
+    degree_view = graph.degree()
 
-    degree_counts = Counter(dict(degreeView))
+    degree_counts = Counter(dict(degree_view))
     max_degree_node = degree_counts.most_common(10)
-    print(f"Nodes with the highest degree:")
+    print("Nodes with the highest degree:")
     for node, degree in max_degree_node:
         print(f"  {node}: {degree} dependencies")
 
@@ -88,17 +94,17 @@ def extract_references(formula):
     return extracted_references
 
 
-def visualize_dependency_graph(G, file_path):
+def visualize_dependency_graph(graph, file_path):
     """
     Render the dependency graph using matplotlib and networkx.
     """
 
-    G = G.to_undirected()
+    graph = graph.to_undirected()
 
-    pos = nx.spring_layout(G)  # layout for nodes
+    pos = nx.spring_layout(graph)  # layout for nodes
     plt.figure(figsize=(10, 10))
     nx.draw(
-        G,
+        graph,
         pos,
         with_labels=True,
         node_color="black",
@@ -115,10 +121,7 @@ def visualize_dependency_graph(G, file_path):
 
 
 if __name__ == "__main__":
-
-    # Replace 'your_spreadsheet.xlsx' with the path to your Excel file
-    #    path_to_excel = "Book1.xlsx"
-    path_to_excel = "Book1.xlsx"
+    path_to_excel = "Book1.xlsx"  # pylint: disable=invalid-name
 
     # override with command line argument
     import sys
