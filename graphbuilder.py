@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 # Regular expression to detect cell references like A1, B2, or ranges like A1:B2
 # CELL_REF_REGEX = r"[A-Z]{1,3}[0-9]+"
 # CELL_REF_REGEX = r"(('?[A-Za-z0-9\s_\-\[\]]+'?![A-Z]{1,3}[0-9]+)|([A-Z]{1,3}[0-9]+))"
+# CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"
+# CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+)"
 CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"
 
 
@@ -77,7 +79,11 @@ def extract_references(formula):
     """
     formula = formula.replace("$", "")
     matches = re.findall(CELL_REF_REGEX, formula)
-    extracted_references = [match[0].replace("$", "") for match in matches if match[0]]
+    # extracted_references = [match[0].replace("$", "") for match in matches if match[0]]
+    extracted_references = [match[0] if match[0] else match[2] for match in matches]
+
+    # trim the extracted references
+    extracted_references = [ref.strip() for ref in extracted_references]
 
     return extracted_references
 
@@ -89,19 +95,19 @@ def visualize_dependency_graph(G, file_path):
 
     G = G.to_undirected()
 
-    pos = nx.fruchterman_reingold_layout(G)  # layout for nodes
-    plt.figure(figsize=(30, 30))
+    pos = nx.spring_layout(G)  # layout for nodes
+    plt.figure(figsize=(10, 10))
     nx.draw(
         G,
         pos,
-        # with_labels=True,
+        with_labels=True,
         node_color="black",
         edge_color="gray",
-        linewidths=0.5,
+        linewidths=3.5,
         alpha=0.8,
-        width=0.1,
+        width=1,
         # font_weight="bold",
-        node_size=2,
+        node_size=20,
     )
     plt.title("Excel Cell Dependency Graph")
     # Save the plot as an image file
@@ -111,7 +117,7 @@ def visualize_dependency_graph(G, file_path):
 if __name__ == "__main__":
     # Replace 'your_spreadsheet.xlsx' with the path to your Excel file
     #    path_to_excel = "Book1.xlsx"
-    path_to_excel = "simplified_1.xlsx"
+    path_to_excel = "Book1.xlsx"
 
     # Extract formulas and build the dependency graph
     dependency_graph = extract_formulas_and_build_dependencies(path_to_excel)
