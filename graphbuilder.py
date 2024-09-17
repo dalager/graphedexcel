@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 
 # Regular expression to detect cell references like A1, B2, or ranges like A1:B2
 # CELL_REF_REGEX = r"[A-Z]{1,3}[0-9]+"
-CELL_REF_REGEX = r"(('?[A-Za-z0-9\s_\-\[\]]+'?![A-Z]{1,3}[0-9]+)|([A-Z]{1,3}[0-9]+))"
+# CELL_REF_REGEX = r"(('?[A-Za-z0-9\s_\-\[\]]+'?![A-Z]{1,3}[0-9]+)|([A-Z]{1,3}[0-9]+))"
+CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"
 
 
 def extract_formulas_and_build_dependencies(file_path):
@@ -19,7 +20,7 @@ def extract_formulas_and_build_dependencies(file_path):
     # Iterate over all sheets
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
-        print(f"\n-- Analyzing sheet: {sheet_name} --\n")
+        print(f"-- Analyzing sheet: {sheet_name} --")
 
         # Iterate over all cells
         for row in ws.iter_rows():
@@ -32,21 +33,20 @@ def extract_formulas_and_build_dependencies(file_path):
                     # Extract all referenced cells from the formula
                     referenced_cells = extract_references(cell.value)
                     refs = []
+
                     # Add the cell and its dependencies to the graph
                     for ref_cell in referenced_cells:
-                        # if ref_cell is without sheet name, add sheet name
                         if "!" not in ref_cell:
+                            # No sheet specified in the reference, assume current sheet
                             refc = f"{sheet_name}!{ref_cell}"
                         else:
                             refc = ref_cell
 
-                        # add node to refs if not already in refs
+                        # Add node to refs if not already in refs
                         if refc not in refs:
                             print(f"  Depends on: {refc}")
                             refs.append(refc)
                             G.add_edge(cell_name, refc)
-
-                    # Cell "cell_name" depends on "ref_cell"
 
     return G
 
@@ -89,7 +89,7 @@ def visualize_dependency_graph(G, file_path):
 
     G = G.to_undirected()
 
-    pos = nx.spiral_layout(G)  # layout for nodes
+    pos = nx.fruchterman_reingold_layout(G)  # layout for nodes
     plt.figure(figsize=(30, 30))
     nx.draw(
         G,
