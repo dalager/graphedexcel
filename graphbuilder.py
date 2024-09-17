@@ -8,10 +8,8 @@ from openpyxl import load_workbook
 import networkx as nx
 import matplotlib.pyplot as plt
 
-# Regular expression to detect cell references like A1, B2, or ranges like A1:B2
-
-# ignore linting error for regex pattern
-CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"
+# Regex to detect cell references like A1, B2, or ranges like A1:B2
+CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"  # noqa
 
 
 def extract_formulas_and_build_dependencies(file_path):
@@ -45,7 +43,7 @@ def extract_formulas_and_build_dependencies(file_path):
                     # Add the cell and its dependencies to the graph
                     for ref_cell in referenced_cells:
                         if "!" not in ref_cell:
-                            # No sheet specified in the reference, assume current sheet
+                            # No sheet specified in the assume current sheet
                             refc = f"{sheet_name}!{ref_cell}"
                         else:
                             refc = ref_cell
@@ -85,13 +83,12 @@ def extract_references(formula):
     """
     formula = formula.replace("$", "")
     matches = re.findall(CELL_REF_REGEX, formula)
-    # extracted_references = [match[0].replace("$", "") for match in matches if match[0]]
-    extracted_references = [match[0] if match[0] else match[2] for match in matches]
+    references = [match[0] if match[0] else match[2] for match in matches]
 
     # trim the extracted references
-    extracted_references = [ref.strip() for ref in extracted_references]
+    references = [ref.strip() for ref in references]
 
-    return extracted_references
+    return references
 
 
 def visualize_dependency_graph(graph, file_path):
