@@ -23,6 +23,36 @@ def test_local_range_references():
     ), f"Expected {expected_references}, but got {actual_references}"
 
 
+# Test for simple absolute references like $A$1, $B$2
+def test_absolute_references():
+    formula = "=$A$1+$B$2"
+    expected_references = ["A1", "B2"]
+    actual_references = extract_references(formula)
+    assert (
+        actual_references == expected_references
+    ), f"Expected {expected_references}, but got {actual_references}"
+
+
+# Test for sheet qualified absolute references like Sheet2!$A$1, Sheet2!$B$2
+def test_sheet_qualified_absolute_references():
+    formula = "=Sheet2!$A$1+Sheet2!$B$2"
+    expected_references = ["Sheet2!A1", "Sheet2!B2"]
+    actual_references = extract_references(formula)
+    assert (
+        actual_references == expected_references
+    ), f"Expected {expected_references}, but got {actual_references}"
+
+
+# Test for sheet-qualified absolute range references like Sheet2!$A$1:$A$10
+def test_sheet_qualified_absolute_range_references():
+    formula = "=SUM(Sheet2!$A$1:$A$10)"
+    expected_references = ["Sheet2!A1:A10"]
+    actual_references = extract_references(formula)
+    assert (
+        actual_references == expected_references
+    ), f"Expected {expected_references}, but got {actual_references}"
+
+
 # Test for sheet-qualified cell like Sheet2!C5
 def test_sheet_qualified_reference():
     formula = "=Sheet2!C5"
