@@ -10,6 +10,8 @@ Meant as a tool to visualize and understand the complexity of Excel spreadsheets
 
 Will generate a graph of the dependencies between cells in an Excel spreadsheet. The graph is generated using the `networkx` library and is visualized using `matplotlib`.
 
+A range reference like `=SUM(A1:A200)` is semantically handled like a single node and not 200 individual nodes in the graph.
+
 <br clear="right"/>
 
 ## Install
