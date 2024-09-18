@@ -114,7 +114,7 @@ def visualize_dependency_graph(graph, file_path):
     )
     plt.title("Excel Cell Dependency Graph")
     # Save the plot as an image file
-    plt.savefig(f"{file_path}.png")
+    plt.savefig(f"images/{file_path}.png")
 
 
 if __name__ == "__main__":
