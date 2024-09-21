@@ -8,9 +8,13 @@ Python script to visualize dependencies between cells in Excel spreadsheets.
 
 Meant as a tool to visualize and understand the complexity of Excel spreadsheets.
 
-Will generate a graph of the dependencies between cells in an Excel spreadsheet. The graph is generated using the `networkx` library and is visualized using `matplotlib`.
+Will generate a graph of the dependencies between cells in an Excel spreadsheet. The graph is generated using the `networkx` library (<https://networkx.org/>) and is visualized using `matplotlib`.
 
-A range reference like `=SUM(A1:A200)` is semantically handled like a single node and not 200 individual nodes in the graph.
+## Definitions
+
+Single-cell references in a formula sitting in cell `A3` like `=A1+A2` is considered a dependency between the node `A3` and the nodes `A2` and `A1`.
+
+A range defined in a formula like `=SUM(B1:B200)` is semantically handled like a single reference or node in the tree and not 200 individual nodes in the graph.
 
 <br clear="right"/>
 
@@ -62,3 +66,16 @@ More in `/images` folder.
 ```bash
 pytest test_cell_reference_extraction.py
 ```
+
+## Contribute
+
+Feel free to contribute by opening an issue or a pull request.
+
+You can help with the following:
+
+- Add more tests
+- Improve the code
+- Add more features
+- Improve the visualization and the ease of configuration
+- Add more examples
+- Add more documentation
