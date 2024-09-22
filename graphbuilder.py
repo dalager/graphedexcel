@@ -148,7 +148,10 @@ def visualize_dependency_graph(graph, file_path):
     Render the dependency graph using matplotlib and networkx.
     """
 
-    graph = graph.to_undirected()
+    # if --keep-direction is not passed as argument
+    if "--keep-direction" not in sys.argv:
+        # Convert the graph to an undirected graph
+        graph = graph.to_undirected()
 
     pos = nx.spring_layout(graph)  # layout for nodes
     plt.figure(figsize=(10, 10))
