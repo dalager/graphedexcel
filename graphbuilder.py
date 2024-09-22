@@ -96,17 +96,27 @@ def print_summary(graph, functionsdict):
     strpadsize = 28
     numpadsize = 5
     # 1. Print basic information about the graph
-    print("=== Dependency Graph Summary ===")
-    print(f"Number of nodes (cells): {graph.number_of_nodes()}")
-    print(f"Number of edges (dependencies): {graph.number_of_edges()}\n")
 
+    print("=== Dependency Graph Summary ===")
+    print(
+        "Cell/Node count".ljust(strpadsize, " ")
+        + str(graph.number_of_nodes()).rjust(numpadsize, " ")
+    )
+    print(
+        "Dependency count".ljust(strpadsize, " ")
+        + str(graph.number_of_edges()).rjust(numpadsize, " ")
+    )
+    print()
+
+    # 2. Print the nodes with the highest degree
     degree_view = graph.degree()
 
     degree_counts = Counter(dict(degree_view))
     max_degree_node = degree_counts.most_common(10)
-    print("Nodes with the highest degree:")
+    print("=== Nodes with the highest degree ===")
     for node, degree in max_degree_node:
-        print(f"  {node}: {degree} dependencies")
+        print(f"{node.ljust(strpadsize)}{str(degree).rjust(numpadsize, ' ')} ")
+
     # 3. Print the most used functions
     print("\n=== Formula functions by count ===")
     sorted_functions = dict(
@@ -161,9 +171,6 @@ def visualize_dependency_graph(graph, file_path):
 
 if __name__ == "__main__":
     path_to_excel = "Book1.xlsx"
-
-    # override with command line argument
-    import sys
 
     if len(sys.argv) > 1:
         path_to_excel = sys.argv[1]
