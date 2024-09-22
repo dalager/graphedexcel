@@ -180,6 +180,10 @@ if __name__ == "__main__":
 
     print_summary(dependency_graph, functions_dict)
 
-    # print("\n-- Generate visualization --")
-    # Visualize the graph of dependencies
-    visualize_dependency_graph(dependency_graph, path_to_excel)
+    # if --no-visualize is not passed as argument
+    if "--no-visualize" not in sys.argv:
+        print(
+            "\033[1;30;40m\nVisualizing the graph of dependencies.\nThis might take a while...\033[0;37;40m\n"  # noqa
+        )
+
+        visualize_dependency_graph(dependency_graph, path_to_excel)
