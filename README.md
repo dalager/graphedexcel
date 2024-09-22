@@ -8,17 +8,16 @@ Python script to visualize dependencies between cells in Excel spreadsheets.
 
 Meant as a tool to visualize and understand the complexity of Excel spreadsheets.
 
-Will generate a graph of the dependencies between cells in an Excel spreadsheet. Data extracted with `openpyxl` (\The graph is generated using the `networkx` library (<https://networkx.org/>) and is visualized using `matplotlib`.
+Will generate a graph of the dependencies between cells in an Excel spreadsheet. Data extracted with `openpyxl` (<https://foss.heptapod.net/openpyxl/openpyxl>), the graph is generated with the `networkx` library (<https://networkx.org/>) and is visualized using `matplotlib`.
 
-This is a simple tool and does not
+This is a simple tool and maybe even naïve in its approach - it was hacked together in two evenings and would benefit from some refactoring and more features. It is meant as a starting point for further development.
+<br clear="right"/>
 
 ## Definitions
 
 Single-cell references in a formula sitting in cell `A3` like `=A1+A2` is considered a dependency between the node `A3` and the nodes `A2` and `A1`.
 
 A range defined in a formula like `=SUM(B1:B200)` is semantically handled like a single reference or node in the tree and not 200 individual nodes in the graph.
-
-<br clear="right"/>
 
 ## Installation
 
@@ -35,12 +34,14 @@ pip install -r requirements.txt
 python graphbuilder.py <path_to_excel_file> [--verbose] [--no-visualize] [--keep-direction]
 ```
 
-Depending on the size of the spreadsheet you might want to adjust the plot configuration in the code to to make the graph more readable (remove labels, decrease widhts and sizes etc)
+Depending on the size of the spreadsheet you might want to adjust the plot configuration in the code to to make the graph more readable (remove labels, decrease widths and sizes etc)
 
 ### Arguments
 
 `--verbose` will dump formula cell contents during (more quiet)
+
 `--no-visualize` will skip the visualization step and only print the summary (faster)
+
 `--keep-direction` will keep the direction of the graph as it is in the excel file, otherwise it will be simplified to an undirected graph (slower)
 
 ## Sample output
@@ -90,7 +91,7 @@ pytest test_cell_reference_extraction.py
 
 Feel free to contribute by opening an issue or a pull request.
 
-You can help with the following:
+You can help with the following, that I have thought of so far:
 
 - Add more tests
 - Improve the code
@@ -98,3 +99,4 @@ You can help with the following:
 - Improve the visualization and the ease of configuration
 - Add more examples
 - Add more documentation
+- Package the script for easier installation and use with PyPi
