@@ -8,7 +8,9 @@ Python script to visualize dependencies between cells in Excel spreadsheets.
 
 Meant as a tool to visualize and understand the complexity of Excel spreadsheets.
 
-Will generate a graph of the dependencies between cells in an Excel spreadsheet. The graph is generated using the `networkx` library (<https://networkx.org/>) and is visualized using `matplotlib`.
+Will generate a graph of the dependencies between cells in an Excel spreadsheet. Data extracted with `openpyxl` (\The graph is generated using the `networkx` library (<https://networkx.org/>) and is visualized using `matplotlib`.
+
+This is a simple tool and does not
 
 ## Definitions
 
@@ -18,7 +20,7 @@ A range defined in a formula like `=SUM(B1:B200)` is semantically handled like a
 
 <br clear="right"/>
 
-## Install
+## Installation
 
 ```bash
 
@@ -27,32 +29,49 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Run
+## Usage
 
 ```bash
-python graphbuilder.py <path_to_excel_file>
+python graphbuilder.py <path_to_excel_file> [--verbose] [--no-visualize] [--keep-direction]
 ```
 
 Depending on the size of the spreadsheet you might want to adjust the plot configuration in the code to to make the graph more readable (remove labels, decrease widhts and sizes etc)
 
+### Arguments
+
+`--verbose` will dump formula cell contents during (more quiet)
+`--no-visualize` will skip the visualization step and only print the summary (faster)
+`--keep-direction` will keep the direction of the graph as it is in the excel file, otherwise it will be simplified to an undirected graph (slower)
+
 ## Sample output
+
+The following is the output of running the script on the provided `Book1.xlsx` file.
 
 ```bash
 === Dependency Graph Summary ===
-Number of nodes (cells): 16
-Number of edges (dependencies): 17
+Cell/Node count                50
+Dependency count               60
 
-Nodes with the highest degree:
-  Sheet1!B5: 4 dependencies
-  Sheet1!B12: 3 dependencies
-  Sheet1!B17: 3 dependencies
-  Sheet1!I21: 3 dependencies
-  Sheet1!G22: 3 dependencies
-  Sheet1!B22: 3 dependencies
-  Sheet1!B28: 3 dependencies
-  Sheet1!G19: 2 dependencies
-  Sheet1!B35: 2 dependencies
-  Sheet3!A2:A11: 2 dependencies
+=== Nodes with the highest degree ===
+Range!F1                       10
+Base!B5                         4
+Base!B12                        3
+Base!B17                        3
+Base!I21                        3
+Base!G22                        3
+Base!B22                        3
+Base!B28                        3
+Range!B2                        3
+Range!B3                        3
+
+=== Formula functions by count ===
+SUM                             3
+POWER                           1
+
+Visualizing the graph of dependencies.
+This might take a while...
+
+Graph visualization saved to images/.\Book1.xlsx.png
 ```
 
 ## Sample plot
