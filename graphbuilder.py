@@ -12,6 +12,11 @@ import sys
 # Regex to detect cell references like A1, B2, or ranges like A1:B2
 CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"  # noqa
 
+# dictionary that stores the uniqe functions used in the formulas
+# the key will be the funciton name and the value will be the number of times it was used
+functions_dict = {}
+
+
 def log(msg):
     """
     Log a message to the console if verbosity is enabled using the --verbose flag.
@@ -21,6 +26,19 @@ def log(msg):
     if "--verbose" in sys.argv:
         print(msg)
 
+
+def stat_functions(cellvalue):
+    # functions used in the formula
+    cellfuncs = re.findall(r"[A-Z]+\(", cellvalue)
+    log(f"  Functions used: {functions_dict}")
+    # add the functions to the dictionary
+    for function in cellfuncs:
+        # remove the "(" from the function name
+        function = function[:-1]
+        if function in functions_dict:
+            functions_dict[function] += 1
+        else:
+            functions_dict[function] = 1
 
 
 def extract_formulas_and_build_dependencies(file_path):
@@ -43,6 +61,8 @@ def extract_formulas_and_build_dependencies(file_path):
         for row in ws.iter_rows():
             for cell in row:
                 if isinstance(cell.value, str) and cell.value.startswith("="):
+                    stat_functions(cell.value)
+
                     # The formula is found in this cell
                     cell_name = f"{sheet_name}!{cell.coordinate}"
                     log(f"Formula in {cell_name}: {cell.value}")
@@ -68,10 +88,13 @@ def extract_formulas_and_build_dependencies(file_path):
     return graph
 
 
-def summarize_graph(graph):
+def print_summary(graph, functionsdict):
     """
-    Summarize a networkx DiGraph representing a dependency graph.
+    Summarize a networkx DiGraph representing a dependency graph. And print the most used functions in the formulas
     """
+
+    strpadsize = 28
+    numpadsize = 5
     # 1. Print basic information about the graph
     print("=== Dependency Graph Summary ===")
     print(f"Number of nodes (cells): {graph.number_of_nodes()}")
@@ -84,6 +107,14 @@ def summarize_graph(graph):
     print("Nodes with the highest degree:")
     for node, degree in max_degree_node:
         print(f"  {node}: {degree} dependencies")
+    # 3. Print the most used functions
+    print("\n=== Formula functions by count ===")
+    sorted_functions = dict(
+        sorted(functionsdict.items(), key=lambda item: item[1], reverse=True)
+    )
+
+    for function, count in sorted_functions.items():
+        print(f"{function.ljust(strpadsize, ' ')}{str(count).rjust(numpadsize, ' ')}")
 
 
 def extract_references(formula):
@@ -140,7 +171,7 @@ if __name__ == "__main__":
     # Extract formulas and build the dependency graph
     dependency_graph = extract_formulas_and_build_dependencies(path_to_excel)
 
-    summarize_graph(dependency_graph)
+    print_summary(dependency_graph, functions_dict)
 
     # print("\n-- Generate visualization --")
     # Visualize the graph of dependencies
