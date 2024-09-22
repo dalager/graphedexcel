@@ -148,7 +148,6 @@ def visualize_dependency_graph(graph, file_path):
     Render the dependency graph using matplotlib and networkx.
     """
 
-    # if --keep-direction is not passed as argument
     if "--keep-direction" not in sys.argv:
         # Convert the graph to an undirected graph
         graph = graph.to_undirected()
@@ -167,8 +166,7 @@ def visualize_dependency_graph(graph, file_path):
         # font_weight="bold",
         node_size=20,
     )
-    plt.title("Excel Cell Dependency Graph")
-    # Save the plot as an image file
+
     filename = f"images/{file_path}.png"
     plt.savefig(filename)
     print(f"Graph visualization saved to {filename}")
