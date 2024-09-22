@@ -7,9 +7,20 @@ import re
 from openpyxl import load_workbook
 import networkx as nx
 import matplotlib.pyplot as plt
+import sys
 
 # Regex to detect cell references like A1, B2, or ranges like A1:B2
 CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"  # noqa
+
+def log(msg):
+    """
+    Log a message to the console if verbosity is enabled using the --verbose flag.
+    """
+    # if verbosity is enabled
+
+    if "--verbose" in sys.argv:
+        print(msg)
+
 
 
 def extract_formulas_and_build_dependencies(file_path):
@@ -26,7 +37,7 @@ def extract_formulas_and_build_dependencies(file_path):
     # Iterate over all sheets
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
-        print(f"-- Analyzing sheet: {sheet_name} --")
+        log(f"-- Analyzing sheet: {sheet_name} --")
 
         # Iterate over all cells
         for row in ws.iter_rows():
@@ -34,7 +45,7 @@ def extract_formulas_and_build_dependencies(file_path):
                 if isinstance(cell.value, str) and cell.value.startswith("="):
                     # The formula is found in this cell
                     cell_name = f"{sheet_name}!{cell.coordinate}"
-                    print(f"Formula in {cell_name}: {cell.value}")
+                    log(f"Formula in {cell_name}: {cell.value}")
 
                     # Extract all referenced cells from the formula
                     referenced_cells = extract_references(cell.value)
@@ -50,7 +61,7 @@ def extract_formulas_and_build_dependencies(file_path):
 
                         # Add node to refs if not already in refs
                         if refc not in refs:
-                            print(f"  Depends on: {refc}")
+                            log(f"  Depends on: {refc}")
                             refs.append(refc)
                             graph.add_edge(cell_name, refc)
 
