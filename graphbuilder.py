@@ -2,15 +2,13 @@
 This script extracts formulas from an Excel file and builds a dependency graph.
 """
 
-from collections import Counter
-import re
 from openpyxl import load_workbook
+from collections import Counter
 import networkx as nx
-import matplotlib.pyplot as plt
+import re
 import sys
-
-# Regex to detect cell references like A1, B2, or ranges like A1:B2
-CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"  # noqa
+from graph_visualizer import visualize_dependency_graph
+from excel_parser import extract_references
 
 # dictionary that stores the uniqe functions used in the formulas
 # the key will be the funciton name and the value will be the number of times it was used
@@ -28,10 +26,14 @@ def log(msg):
 
 
 def stat_functions(cellvalue):
+    """
+    Extract the functions used in the formula and store them in a dictionary.
+    This will be used to print the most used functions in the formulas.
+    """
+
     # functions used in the formula
     cellfuncs = re.findall(r"[A-Z]+\(", cellvalue)
     log(f"  Functions used: {functions_dict}")
-    # add the functions to the dictionary
     for function in cellfuncs:
         # remove the "(" from the function name
         function = function[:-1]
@@ -63,28 +65,50 @@ def extract_formulas_and_build_dependencies(file_path):
                 if isinstance(cell.value, str) and cell.value.startswith("="):
                     stat_functions(cell.value)
 
-                    # The formula is found in this cell
                     cell_name = f"{sheet_name}!{cell.coordinate}"
                     log(f"Formula in {cell_name}: {cell.value}")
 
-                    # Extract all referenced cells from the formula
-                    referenced_cells = extract_references(cell.value)
-                    refs = []
+                    graph.add_node(cell_name, sheet=sheet_name)
+
+                    # Extract all referenced cells and ranges from the formula
+                    referenced_cells, range_dependencies = extract_references(
+                        cell.value
+                    )
 
                     # Add the cell and its dependencies to the graph
                     for ref_cell in referenced_cells:
                         if "!" not in ref_cell:
-                            # No sheet specified in the assume current sheet
+                            # No sheet specified, assume current sheet
                             refc = f"{sheet_name}!{ref_cell}"
                         else:
                             refc = ref_cell
 
-                        # Add node to refs if not already in refs
-                        if refc not in refs:
-                            log(f"  Depends on: {refc}")
-                            refs.append(refc)
-                            graph.add_edge(cell_name, refc)
+                        log(f"  Depends on: {refc}")
+                        graph.add_node(refc, sheet=sheet_name)
+                        graph.add_edge(cell_name, refc)
 
+                    # Add dependencies for ranges
+                    for single_cell, range_ref in range_dependencies.items():
+                        if "!" not in range_ref:
+                            range_ref = f"{sheet_name}!{range_ref}"
+                            range_sheet = sheet_name
+                        else:
+                            range_ref = range_ref
+                            range_sheet = range_ref.split("!")[0]
+
+                        if "!" not in single_cell:
+                            single_cell = f"{sheet_name}!{single_cell}"
+                            cell_sheet = sheet_name
+                        else:
+                            single_cell = single_cell
+                            cell_sheet = single_cell.split("!")[0]
+
+                        # this is the single cell that points to the range it belongs to
+                        graph.add_node(f"{single_cell}", sheet=cell_sheet)  # noqa
+                        graph.add_node(f"{range_ref}", sheet=range_sheet)
+
+                        # Then add the edge between the single cell and the range
+                        graph.add_edge(f"{single_cell}", f"{range_ref}")
     return graph
 
 
@@ -125,51 +149,6 @@ def print_summary(graph, functionsdict):
 
     for function, count in sorted_functions.items():
         print(f"{function.ljust(strpadsize, ' ')}{str(count).rjust(numpadsize, ' ')}")
-
-
-def extract_references(formula):
-    """
-    Extract all referenced cells from a formula using regular expressions.
-    This returns a list of cells that are mentioned directly (e.g., A1, B2),
-    but doesn't handle ranges or external sheets' references.
-    """
-    formula = formula.replace("$", "")
-    matches = re.findall(CELL_REF_REGEX, formula)
-    references = [match[0] if match[0] else match[2] for match in matches]
-
-    # trim the extracted references
-    references = [ref.strip() for ref in references]
-
-    return references
-
-
-def visualize_dependency_graph(graph, file_path):
-    """
-    Render the dependency graph using matplotlib and networkx.
-    """
-
-    if "--keep-direction" not in sys.argv:
-        # Convert the graph to an undirected graph
-        graph = graph.to_undirected()
-
-    pos = nx.spring_layout(graph)  # layout for nodes
-    plt.figure(figsize=(10, 10))
-    nx.draw(
-        graph,
-        pos,
-        with_labels=True,
-        node_color="black",
-        edge_color="gray",
-        linewidths=3.5,
-        alpha=0.8,
-        width=1,
-        # font_weight="bold",
-        node_size=20,
-    )
-
-    filename = f"images/{file_path}.png"
-    plt.savefig(filename)
-    print(f"Graph visualization saved to {filename}")
 
 
 if __name__ == "__main__":

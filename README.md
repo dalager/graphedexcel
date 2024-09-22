@@ -31,7 +31,7 @@ pip install -r requirements.txt
 ## Usage
 
 ```bash
-python graphbuilder.py <path_to_excel_file> [--verbose] [--no-visualize] [--keep-direction]
+python graphbuilder.py <path_to_excel_file> [--verbose] [--no-visualize] [--keep-direction] [--open-image]
 ```
 
 Depending on the size of the spreadsheet you might want to adjust the plot configuration in the code to to make the graph more readable (remove labels, decrease widths and sizes etc)
@@ -43,6 +43,8 @@ Depending on the size of the spreadsheet you might want to adjust the plot confi
 `--no-visualize` will skip the visualization step and only print the summary (faster)
 
 `--keep-direction` will keep the direction of the graph as it is in the excel file, otherwise it will be simplified to an undirected graph (slower)
+
+`--open-image` will open the generated image in the default image viewer (only on Windows)
 
 ## Sample output
 
