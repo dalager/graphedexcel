@@ -59,10 +59,12 @@ def extract_formulas_and_build_dependencies(file_path):
         ws = wb[sheet_name]
         log(f"-- Analyzing sheet: {sheet_name} --")
 
-        # Iterate over all cells
+        # Iterate over all cells in the sheet and extract formulas
         for row in ws.iter_rows():
             for cell in row:
+                # only interested in cells with formulas
                 if isinstance(cell.value, str) and cell.value.startswith("="):
+                    # collect functions usage statistics
                     stat_functions(cell.value)
 
                     cell_name = f"{sheet_name}!{cell.coordinate}"
@@ -75,7 +77,8 @@ def extract_formulas_and_build_dependencies(file_path):
                         cell.value
                     )
 
-                    # Add the cell and its dependencies to the graph
+                    # all the referenced cells and cells from expanded ranges
+                    # is added to the graph as nodes and edges
                     for ref_cell in referenced_cells:
                         if "!" not in ref_cell:
                             # No sheet specified, assume current sheet
@@ -84,10 +87,14 @@ def extract_formulas_and_build_dependencies(file_path):
                             refc = ref_cell
 
                         log(f"  Depends on: {refc}")
+                        # add the node
                         graph.add_node(refc, sheet=sheet_name)
+                        # add the edge
                         graph.add_edge(cell_name, refc)
 
-                    # Add dependencies for ranges
+                    # If a range like A1:B3 is referenced, add the
+                    # edge between the cells within that range and
+                    # the range istself
                     for single_cell, range_ref in range_dependencies.items():
                         if "!" not in range_ref:
                             range_ref = f"{sheet_name}!{range_ref}"

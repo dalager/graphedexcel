@@ -19,6 +19,10 @@ Single-cell references in a formula sitting in cell `A3` like `=A1+A2` is consid
 
 A range defined in a formula like `=SUM(B1:B200)` is semantically handled like a single reference or node in the tree and not 200 individual nodes in the graph.
 
+The way the graph is built is by iterating over all cells in the spreadsheet and extracting the references in the formula of each cell. The references are then added as edges in the graph.
+
+A cell within a range is considered a dependency of the range itself, but not of the other cells in the range.
+
 ## Installation
 
 ```bash
