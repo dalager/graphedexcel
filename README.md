@@ -1,6 +1,6 @@
 # Graphed Excel
 
-![Python Version](https://img.shields.io/badge/python-3.12.5-blue)
+![Python Version](https://img.shields.io/badge/python-3.10-blue) ![Python Version](https://img.shields.io/badge/python-3.11-blue) ![Python Version](https://img.shields.io/badge/python-3.12-blue)
 
 <img src="images/Book1.xlsx.png" align="right" width="300" alt="Plot from Example Book1.xlsx file">
 
