@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 import sys
 
 small_graph_settings = {
-    "node_size": 50,
+    "node_size": 100,
     "edge_color": "black",
     "with_labels": True,
-    "font_size": 7,
+    "font_size": 10,
     "linewidths": 0.8,
     "alpha": 0.8,
     "width": 0.2,

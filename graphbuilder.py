@@ -67,19 +67,19 @@ def extract_formulas_and_build_dependencies(file_path):
                     # collect functions usage statistics
                     stat_functions(cell.value)
 
-                    cell_name = f"{sheet_name}!{cell.coordinate}"
-                    log(f"Formula in {cell_name}: {cell.value}")
+                    current_cell = f"{sheet_name}!{cell.coordinate}"
+                    log(f"Formula in {current_cell}: {cell.value}")
 
-                    graph.add_node(cell_name, sheet=sheet_name)
+                    graph.add_node(current_cell, sheet=sheet_name)
 
                     # Extract all referenced cells and ranges from the formula
-                    referenced_cells, range_dependencies = extract_references(
-                        cell.value
+                    direct_references, range_references, range_dependencies = (
+                        extract_references(cell.value)
                     )
 
                     # all the referenced cells and cells from expanded ranges
                     # is added to the graph as nodes and edges
-                    for ref_cell in referenced_cells:
+                    for ref_cell in direct_references:
                         if "!" not in ref_cell:
                             # No sheet specified, assume current sheet
                             refc = f"{sheet_name}!{ref_cell}"
@@ -90,7 +90,19 @@ def extract_formulas_and_build_dependencies(file_path):
                         # add the node
                         graph.add_node(refc, sheet=sheet_name)
                         # add the edge
-                        graph.add_edge(cell_name, refc)
+                        graph.add_edge(current_cell, refc)
+
+                    # If a range like A1:B3 is referenced, add the range definition as a node
+                    for rng in range_references:
+                        if "!" not in rng:
+                            rng = f"{sheet_name}!{rng}"
+                            range_sheet = sheet_name
+                        else:
+                            rng = rng
+                            range_sheet = rng.split("!")[0]
+
+                        graph.add_node(rng, sheet=sheet_name)
+                        graph.add_edge(current_cell, rng)
 
                     # If a range like A1:B3 is referenced, add the
                     # edge between the cells within that range and
@@ -111,11 +123,11 @@ def extract_formulas_and_build_dependencies(file_path):
                             cell_sheet = single_cell.split("!")[0]
 
                         # this is the single cell that points to the range it belongs to
-                        graph.add_node(f"{single_cell}", sheet=cell_sheet)  # noqa
-                        graph.add_node(f"{range_ref}", sheet=range_sheet)
+                        graph.add_node(single_cell, sheet=cell_sheet)  # noqa
+                        graph.add_node(range_ref, sheet=range_sheet)
 
                         # Then add the edge between the single cell and the range
-                        graph.add_edge(f"{single_cell}", f"{range_ref}")
+                        graph.add_edge(range_ref, single_cell)
     return graph
 
 

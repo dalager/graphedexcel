@@ -46,16 +46,18 @@ def extract_references(formula):
 
     expanded_references = []
     dependencies = {}
+    direct_references = []
+    range_references = []
 
     for ref in references:
         if ":" in ref:  # it's a range like A1:A3
             expanded_cells = expand_range(ref)
             expanded_references.extend(expanded_cells)
-
+            range_references.append(ref)
             # Store the range-to-cells relationship
             for cell in expanded_cells:
                 dependencies[cell] = ref
         else:  # single cell
-            expanded_references.append(ref)
+            direct_references.append(ref)
 
-    return expanded_references, dependencies
+    return direct_references, range_references, dependencies
