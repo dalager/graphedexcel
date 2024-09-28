@@ -7,8 +7,8 @@ import sys
 small_graph_settings = {
     "node_size": 50,
     "edge_color": "black",
-    "with_labels": True,
-    "font_size": 7,
+    "with_labels": False,
+    "font_size": 10,
     "linewidths": 0.8,
     "alpha": 0.8,
     "width": 0.2,

@@ -17,7 +17,29 @@ This is a simple tool and maybe even naïve in its approach - it was hacked toge
 
 Single-cell references in a formula sitting in cell `A3` like `=A1+A2` is considered a dependency between the node `A3` and the nodes `A2` and `A1`.
 
-A range defined in a formula like `=SUM(B1:B200)` is semantically handled like a single reference or node in the tree and not 200 individual nodes in the graph.
+```mermaid
+graph TD
+    A1 --> A3
+    A2 --> A3
+    A3["=A1 + A2"]
+```
+
+A range defined in a formula like `=SUM(B1:B3)` is kept as a single node in the graph, but all the containing cells are expanded as dependencies of the range node.
+
+So when a cell, `C1` contains `=SUM(B1:B3)` the graph will look like this:
+
+```mermaid
+
+graph TD
+    R -->B1
+    R -->B2
+    R -->B3
+    R["B1:B3"]
+    C1 --> R
+
+    C1["C1=SUM(B1:B3)"]
+
+```
 
 The way the graph is built is by iterating over all cells in the spreadsheet and extracting the references in the formula of each cell. The references are then added as edges in the graph.
 
@@ -39,6 +61,8 @@ python graphbuilder.py <path_to_excel_file> [--verbose] [--no-visualize] [--keep
 ```
 
 Depending on the size of the spreadsheet you might want to adjust the plot configuration in the code to to make the graph more readable (remove labels, decrease widths and sizes etc)
+
+In [graph_visualizer.py](graph_visualizer.py) you will find three configuration for small, medium and large graphs. You can adjust the configuration to your needs.
 
 ### Arguments
 
