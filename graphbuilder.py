@@ -74,92 +74,76 @@ def extract_formulas_and_build_dependencies(file_path):
     """
     Extract formulas from an Excel file and build a dependency graph.
     """
-
-    # Load the workbook
     wb = load_workbook(file_path, data_only=False)
-
-    # Create a directed graph for dependencies
     graph = nx.DiGraph()
 
-    # Iterate over all sheets
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
         log(f"========== Analyzing sheet: {sheet_name} ==========")
-        sheet_name = sanitize_sheetname(sheet_name)
-        # Iterate over all cells in the sheet and extract formulas
-        for row in ws.iter_rows():
-            for cell in row:
-                # only interested in cells with formulas
-                if isinstance(cell.value, str) and cell.value.startswith("="):
-                    # collect functions usage statistics
-                    stat_functions(cell.value)
+        sanitized_sheet_name = sanitize_sheetname(sheet_name)
+        process_sheet(ws, sanitized_sheet_name, graph)
 
-                    current_cell = f"{sheet_name}!{cell.coordinate}"
-                    log(f"Formula in {current_cell}: {cell.value}")
-
-                    add_node(graph, current_cell, sheet_name)
-
-                    # Extract all referenced cells and ranges from the formula
-                    direct_references, range_references, range_dependencies = (
-                        extract_references(cell.value)
-                    )
-
-                    # all the referenced cells and cells from expanded ranges
-                    # is added to the graph as nodes and edges
-                    for ref_cell in direct_references:
-                        if "!" not in ref_cell:
-                            # No sheet specified, assume current sheet
-                            refc = f"{sheet_name}!{ref_cell}"
-                        else:
-                            # remove ' from sheet name
-                            ref_cell = ref_cell.replace("'", "")
-                            refc = ref_cell
-
-                        log(f"  Cell: {refc}")
-                        # add the node
-                        add_node(graph, refc, sheet_name)
-                        # add the edge
-                        graph.add_edge(current_cell, refc)
-
-                    # If a range like A1:B3 is referenced, add the range definition as a node
-                    for rng in range_references:
-                        log(f"  Range: {rng}")
-
-                        if "!" not in rng:
-                            rng = f"{sheet_name}!{rng}"
-                            range_sheet = sheet_name
-                        else:
-                            rng = sanitize_range(rng)
-                            range_sheet = rng.split("!")[0]
-
-                        add_node(graph, rng, range_sheet)
-                        graph.add_edge(current_cell, rng)
-
-                    # If a range like A1:B3 is referenced, add the
-                    # edge between the cells within that range and
-                    # the range istself
-                    for single_cell, range_ref in range_dependencies.items():
-                        if "!" not in range_ref:
-                            range_ref = f"{sheet_name}!{range_ref}"
-                            range_sheet = sheet_name
-                        else:
-                            range_ref = sanitize_range(range_ref)
-                            range_sheet = range_ref.split("!")[0]
-
-                        if "!" not in single_cell:
-                            single_cell = f"{sheet_name}!{single_cell}"
-                            cell_sheet = sheet_name
-                        else:
-                            single_cell = single_cell
-                            cell_sheet = single_cell.split("!")[0]
-
-                        # this is the single cell that points to the range it belongs to
-                        add_node(graph, single_cell, cell_sheet)
-                        add_node(graph, range_ref, range_sheet)
-
-                        # Then add the edge between the single cell and the range
-                        graph.add_edge(range_ref, single_cell)
     return graph
+
+
+def process_sheet(ws, sheet_name, graph):
+    for row in ws.iter_rows():
+        for cell in row:
+            if isinstance(cell.value, str) and cell.value.startswith("="):
+                process_formula_cell(cell, sheet_name, graph)
+
+
+def process_formula_cell(cell, sheet_name, graph):
+    stat_functions(cell.value)
+    current_cell = f"{sheet_name}!{cell.coordinate}"
+    log(f"Formula in {current_cell}: {cell.value}")
+    add_node(graph, current_cell, sheet_name)
+
+    direct_references, range_references, range_dependencies = extract_references(
+        cell.value
+    )
+    add_references_to_graph(direct_references, current_cell, sheet_name, graph)
+    add_ranges_to_graph(range_references, current_cell, sheet_name, graph)
+    add_range_dependencies_to_graph(range_dependencies, sheet_name, graph)
+
+
+def add_references_to_graph(references, current_cell, sheet_name, graph):
+    for ref_cell in references:
+        refc = (
+            f"{sheet_name}!{ref_cell}"
+            if "!" not in ref_cell
+            else ref_cell.replace("'", "")
+        )
+        log(f"  Cell: {refc}")
+        add_node(graph, refc, sheet_name)
+        graph.add_edge(current_cell, refc)
+
+
+def add_ranges_to_graph(ranges, current_cell, sheet_name, graph):
+    for rng in ranges:
+        range_sheet = sheet_name if "!" not in rng else rng.split("!")[0]
+        rng = f"{sheet_name}!{rng}" if "!" not in rng else sanitize_range(rng)
+        log(f"  Range: {rng}")
+        add_node(graph, rng, range_sheet)
+        graph.add_edge(current_cell, rng)
+
+
+def add_range_dependencies_to_graph(range_dependencies, sheet_name, graph):
+    for single_cell, range_ref in range_dependencies.items():
+        range_ref = (
+            f"{sheet_name}!{range_ref}"
+            if "!" not in range_ref
+            else sanitize_range(range_ref)
+        )
+        single_cell = (
+            f"{sheet_name}!{single_cell}" if "!" not in single_cell else single_cell
+        )
+        range_sheet = range_ref.split("!")[0]
+        cell_sheet = single_cell.split("!")[0]
+
+        add_node(graph, single_cell, cell_sheet)
+        add_node(graph, range_ref, range_sheet)
+        graph.add_edge(range_ref, single_cell)
 
 
 def print_summary(graph, functionsdict):
