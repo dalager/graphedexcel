@@ -2,66 +2,59 @@
 This script extracts formulas from an Excel file and builds a dependency graph.
 """
 
+from typing import List, Dict
 from openpyxl import load_workbook
-from collections import Counter
 import networkx as nx
 import re
 import sys
 from graph_visualizer import visualize_dependency_graph
+from graph_summarizer import print_summary
 from excel_parser import extract_references
 
-# dictionary that stores the uniqe functions used in the formulas
-# the key will be the funciton name and the value will be the number of times it was used
-functions_dict = {}
+# Dictionary that stores the unique functions used in the formulas
+# The key will be the function name and the value will be the number of times it was used
+functions_dict: Dict[str, int] = {}
 
 
-def log(msg):
+def log(msg: str) -> None:
     """
     Log a message to the console if verbosity is enabled using the --verbose flag.
     """
-    # if verbosity is enabled
-
     if "--verbose" in sys.argv:
         print(msg)
 
 
-def sanitize_sheetname(sheetname):
+def sanitize_sheetname(sheetname: str) -> str:
     """
     Remove any special characters from the sheet name.
     """
     return sheetname.replace("'", "")
 
 
-def sanitize_range(rangestring):
+def sanitize_range(rangestring: str) -> str:
     """
     Remove any special characters from the range.
     """
     if "!" in rangestring:
-        sheet = rangestring.split("!")[0].replace("'", "")
-        range = rangestring.split("!")[1]
+        sheet, range_ = rangestring.split("!")
+        sheet = sheet.replace("'", "")
+        return f"{sheet}!{range_}"
+    return rangestring
 
-    return f"{sheet}!{range}"
 
-
-def stat_functions(cellvalue):
+def stat_functions(cellvalue: str) -> None:
     """
     Extract the functions used in the formula and store them in a dictionary.
     This will be used to print the most used functions in the formulas.
     """
-
-    # functions used in the formula
     cellfuncs = re.findall(r"[A-Z]+\(", cellvalue)
     log(f"  Functions used: {functions_dict}")
     for function in cellfuncs:
-        # remove the "(" from the function name
-        function = function[:-1]
-        if function in functions_dict:
-            functions_dict[function] += 1
-        else:
-            functions_dict[function] = 1
+        function = function[:-1]  # Remove the "(" from the function name
+        functions_dict[function] = functions_dict.get(function, 0) + 1
 
 
-def add_node(graph, node, sheet):
+def add_node(graph: nx.DiGraph, node: str, sheet: str) -> None:
     """
     Add a node to the graph with the specified sheet name.
     """
@@ -70,135 +63,114 @@ def add_node(graph, node, sheet):
     graph.add_node(node, sheet=sheet)
 
 
-def extract_formulas_and_build_dependencies(file_path):
+def extract_formulas_and_build_dependencies(file_path: str) -> nx.DiGraph:
     """
     Extract formulas from an Excel file and build a dependency graph.
     """
+    try:
+        wb = load_workbook(file_path, data_only=False)
+    except Exception as e:
+        log(f"Error loading workbook: {e}")
+        sys.exit(1)
 
-    # Load the workbook
-    wb = load_workbook(file_path, data_only=False)
-
-    # Create a directed graph for dependencies
     graph = nx.DiGraph()
 
-    # Iterate over all sheets
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
         log(f"========== Analyzing sheet: {sheet_name} ==========")
-        sheet_name = sanitize_sheetname(sheet_name)
-        # Iterate over all cells in the sheet and extract formulas
-        for row in ws.iter_rows():
-            for cell in row:
-                # only interested in cells with formulas
-                if isinstance(cell.value, str) and cell.value.startswith("="):
-                    # collect functions usage statistics
-                    stat_functions(cell.value)
+        sanitized_sheet_name = sanitize_sheetname(sheet_name)
+        process_sheet(ws, sanitized_sheet_name, graph)
 
-                    current_cell = f"{sheet_name}!{cell.coordinate}"
-                    log(f"Formula in {current_cell}: {cell.value}")
-
-                    add_node(graph, current_cell, sheet_name)
-
-                    # Extract all referenced cells and ranges from the formula
-                    direct_references, range_references, range_dependencies = (
-                        extract_references(cell.value)
-                    )
-
-                    # all the referenced cells and cells from expanded ranges
-                    # is added to the graph as nodes and edges
-                    for ref_cell in direct_references:
-                        if "!" not in ref_cell:
-                            # No sheet specified, assume current sheet
-                            refc = f"{sheet_name}!{ref_cell}"
-                        else:
-                            # remove ' from sheet name
-                            ref_cell = ref_cell.replace("'", "")
-                            refc = ref_cell
-
-                        log(f"  Cell: {refc}")
-                        # add the node
-                        add_node(graph, refc, sheet_name)
-                        # add the edge
-                        graph.add_edge(current_cell, refc)
-
-                    # If a range like A1:B3 is referenced, add the range definition as a node
-                    for rng in range_references:
-                        log(f"  Range: {rng}")
-
-                        if "!" not in rng:
-                            rng = f"{sheet_name}!{rng}"
-                            range_sheet = sheet_name
-                        else:
-                            rng = sanitize_range(rng)
-                            range_sheet = rng.split("!")[0]
-
-                        add_node(graph, rng, range_sheet)
-                        graph.add_edge(current_cell, rng)
-
-                    # If a range like A1:B3 is referenced, add the
-                    # edge between the cells within that range and
-                    # the range istself
-                    for single_cell, range_ref in range_dependencies.items():
-                        if "!" not in range_ref:
-                            range_ref = f"{sheet_name}!{range_ref}"
-                            range_sheet = sheet_name
-                        else:
-                            range_ref = sanitize_range(range_ref)
-                            range_sheet = range_ref.split("!")[0]
-
-                        if "!" not in single_cell:
-                            single_cell = f"{sheet_name}!{single_cell}"
-                            cell_sheet = sheet_name
-                        else:
-                            single_cell = single_cell
-                            cell_sheet = single_cell.split("!")[0]
-
-                        # this is the single cell that points to the range it belongs to
-                        add_node(graph, single_cell, cell_sheet)
-                        add_node(graph, range_ref, range_sheet)
-
-                        # Then add the edge between the single cell and the range
-                        graph.add_edge(range_ref, single_cell)
     return graph
 
 
-def print_summary(graph, functionsdict):
+def process_sheet(ws, sheet_name: str, graph: nx.DiGraph) -> None:
     """
-    Summarize a networkx DiGraph representing a dependency graph. And print the most used functions in the formulas
+    Process a sheet and add references to the graph.
     """
+    for row in ws.iter_rows():
+        for cell in row:
+            if isinstance(cell.value, str) and cell.value.startswith("="):
+                process_formula_cell(cell, sheet_name, graph)
 
-    strpadsize = 28
-    numpadsize = 5
-    # 1. Print basic information about the graph
 
-    print("=== Dependency Graph Summary ===")
-    print(
-        "Cell/Node count".ljust(strpadsize, " ")
-        + str(graph.number_of_nodes()).rjust(numpadsize, " ")
+def process_formula_cell(cell, sheet_name: str, graph: nx.DiGraph) -> None:
+    """
+    Process a cell containing a formula.
+    """
+    stat_functions(cell.value)
+    cell_reference = f"{sheet_name}!{cell.coordinate}"
+    log(f"Formula in {cell_reference}: {cell.value}")
+    add_node(graph, cell_reference, sheet_name)
+
+    direct_references, range_references, range_dependencies = extract_references(
+        cell.value
     )
-    print(
-        "Dependency count".ljust(strpadsize, " ")
-        + str(graph.number_of_edges()).rjust(numpadsize, " ")
+    add_references_to_graph(direct_references, cell_reference, sheet_name, graph)
+    add_ranges_to_graph(range_references, cell_reference, sheet_name, graph)
+    add_range_dependencies_to_graph(range_dependencies, sheet_name, graph)
+
+
+def add_references_to_graph(
+    references: List[str], current_cell: str, sheet_name: str, graph: nx.DiGraph
+) -> None:
+    """
+    Add direct cell references to the graph.
+    """
+    for cell_reference in references:
+        cell_reference = format_reference(cell_reference, sheet_name)
+        log(f"  Cell: {cell_reference}")
+        add_node(graph, cell_reference, sheet_name)
+        graph.add_edge(current_cell, cell_reference)
+
+
+def add_ranges_to_graph(
+    ranges: List[str], current_cell: str, sheet_name: str, graph: nx.DiGraph
+) -> None:
+    """
+    Add range references to the graph.
+    """
+    for range_reference in ranges:
+        range_sheet_name = get_range_sheet_name(range_reference, sheet_name)
+        range_reference = format_reference(range_reference, sheet_name)
+        log(f"  Range: {range_reference}")
+        add_node(graph, range_reference, range_sheet_name)
+        graph.add_edge(current_cell, range_reference)
+
+
+def add_range_dependencies_to_graph(
+    range_dependencies: Dict[str, str], sheet_name: str, graph: nx.DiGraph
+) -> None:
+    """
+    Add dependencies between ranges and cells.
+    """
+    for cell_reference, range_reference in range_dependencies.items():
+        range_reference = format_reference(range_reference, sheet_name)
+        cell_reference = format_reference(cell_reference, sheet_name)
+        range_sheet_name = range_reference.split("!")[0]
+        cell_sheet_name = cell_reference.split("!")[0]
+
+        add_node(graph, cell_reference, cell_sheet_name)
+        add_node(graph, range_reference, range_sheet_name)
+        graph.add_edge(range_reference, cell_reference)
+
+
+def format_reference(reference: str, sheet_name: str) -> str:
+    """
+    Format a cell or range reference to include the sheet name if not already present.
+    """
+    return (
+        f"{sheet_name}!{reference}"
+        if "!" not in reference
+        else reference.replace("'", "")
     )
-    print()
 
-    # 2. Print the nodes with the highest degree
-    degree_view = graph.degree()
 
-    degree_counts = Counter(dict(degree_view))
-    max_degree_node = degree_counts.most_common(10)
-    print("=== Nodes with the highest degree ===")
-    for node, degree in max_degree_node:
-        print(f"{node.ljust(strpadsize)}{str(degree).rjust(numpadsize, ' ')} ")
-
-    # 3. Print the most used functions
-    print("\n=== Formula functions by count ===")
-    sorted_functions = dict(
-        sorted(functionsdict.items(), key=lambda item: item[1], reverse=True)
-    )
-
-    for function, count in sorted_functions.items():
-        print(f"{function.ljust(strpadsize, ' ')}{str(count).rjust(numpadsize, ' ')}")
+def get_range_sheet_name(range_reference: str, sheet_name: str) -> str:
+    """
+    Get the sheet name for a range reference.
+    """
+    return sheet_name if "!" not in range_reference else range_reference.split("!")[0]
 
 
 if __name__ == "__main__":
