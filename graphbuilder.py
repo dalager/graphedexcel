@@ -95,55 +95,63 @@ def process_sheet(ws, sheet_name, graph):
 
 def process_formula_cell(cell, sheet_name, graph):
     stat_functions(cell.value)
-    current_cell = f"{sheet_name}!{cell.coordinate}"
-    log(f"Formula in {current_cell}: {cell.value}")
-    add_node(graph, current_cell, sheet_name)
+    cell_reference = f"{sheet_name}!{cell.coordinate}"
+    log(f"Formula in {cell_reference}: {cell.value}")
+    add_node(graph, cell_reference, sheet_name)
 
     direct_references, range_references, range_dependencies = extract_references(
         cell.value
     )
-    add_references_to_graph(direct_references, current_cell, sheet_name, graph)
-    add_ranges_to_graph(range_references, current_cell, sheet_name, graph)
+    add_references_to_graph(direct_references, cell_reference, sheet_name, graph)
+    add_ranges_to_graph(range_references, cell_reference, sheet_name, graph)
     add_range_dependencies_to_graph(range_dependencies, sheet_name, graph)
 
 
 def add_references_to_graph(references, current_cell, sheet_name, graph):
-    for ref_cell in references:
-        refc = (
-            f"{sheet_name}!{ref_cell}"
-            if "!" not in ref_cell
-            else ref_cell.replace("'", "")
+    for cell_reference in references:
+        cell_reference = (
+            f"{sheet_name}!{cell_reference}"
+            if "!" not in cell_reference
+            else cell_reference.replace("'", "")
         )
-        log(f"  Cell: {refc}")
-        add_node(graph, refc, sheet_name)
-        graph.add_edge(current_cell, refc)
+        log(f"  Cell: {cell_reference}")
+        add_node(graph, cell_reference, sheet_name)
+        graph.add_edge(current_cell, cell_reference)
 
 
 def add_ranges_to_graph(ranges, current_cell, sheet_name, graph):
-    for rng in ranges:
-        range_sheet = sheet_name if "!" not in rng else rng.split("!")[0]
-        rng = f"{sheet_name}!{rng}" if "!" not in rng else sanitize_range(rng)
-        log(f"  Range: {rng}")
-        add_node(graph, rng, range_sheet)
-        graph.add_edge(current_cell, rng)
+    for range_reference in ranges:
+        range_sheet_name = (
+            sheet_name if "!" not in range_reference else range_reference.split("!")[0]
+        )
+        range_reference = (
+            f"{sheet_name}!{range_reference}"
+            if "!" not in range_reference
+            else sanitize_range(range_reference)
+        )
+        log(f"  Range: {range_reference}")
+        add_node(graph, range_reference, range_sheet_name)
+        graph.add_edge(current_cell, range_reference)
 
 
 def add_range_dependencies_to_graph(range_dependencies, sheet_name, graph):
-    for single_cell, range_ref in range_dependencies.items():
-        range_ref = (
-            f"{sheet_name}!{range_ref}"
-            if "!" not in range_ref
-            else sanitize_range(range_ref)
+    for cell_reference, range_reference in range_dependencies.items():
+        range_reference = (
+            f"{sheet_name}!{range_reference}"
+            if "!" not in range_reference
+            else sanitize_range(range_reference)
         )
-        single_cell = (
-            f"{sheet_name}!{single_cell}" if "!" not in single_cell else single_cell
+        cell_reference = (
+            f"{sheet_name}!{cell_reference}"
+            if "!" not in cell_reference
+            else cell_reference
         )
-        range_sheet = range_ref.split("!")[0]
-        cell_sheet = single_cell.split("!")[0]
+        range_sheet_name = range_reference.split("!")[0]
+        cell_sheet_name = cell_reference.split("!")[0]
 
-        add_node(graph, single_cell, cell_sheet)
-        add_node(graph, range_ref, range_sheet)
-        graph.add_edge(range_ref, single_cell)
+        add_node(graph, cell_reference, cell_sheet_name)
+        add_node(graph, range_reference, range_sheet_name)
+        graph.add_edge(range_reference, cell_reference)
 
 
 def print_summary(graph, functionsdict):
