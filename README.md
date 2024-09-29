@@ -79,24 +79,25 @@ In [graph_visualizer.py](graph_visualizer.py) you will find three configuration 
 The following is the output of running the script on the provided `Book1.xlsx` file.
 
 ```bash
-=== Dependency Graph Summary ===
-Cell/Node count                50
-Dependency count               60
+===  Dependency Graph Summary ===
+Cell/Node count                70
+Dependency count              100
 
-=== Nodes with the highest degree ===
-Range!F1                       10
-Base!B5                         4
-Base!B12                        3
-Base!B17                        3
-Base!I21                        3
-Base!G22                        3
-Base!B22                        3
-Base!B28                        3
-Range!B2                        3
-Range!B3                        3
 
-=== Formula functions by count ===
-SUM                             3
+===  Most connected nodes     ===
+Range Madness!A2:A11           22
+Range Madness!B2:B11           11
+Range Madness!F1               10
+Main Sheet!B5                   4
+Main Sheet!B22                  4
+Detached !A2:A4                 4
+Range Madness!B2                4
+Range Madness!B3                4
+Range Madness!B4                4
+Range Madness!B5                4
+
+===  Most used functions      ===
+SUM                             4
 POWER                           1
 
 Visualizing the graph of dependencies.

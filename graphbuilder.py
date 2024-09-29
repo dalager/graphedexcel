@@ -4,11 +4,11 @@ This script extracts formulas from an Excel file and builds a dependency graph.
 
 from typing import List, Dict
 from openpyxl import load_workbook
-from collections import Counter
 import networkx as nx
 import re
 import sys
 from graph_visualizer import visualize_dependency_graph
+from graph_summarizer import print_summary
 from excel_parser import extract_references
 
 # Dictionary that stores the unique functions used in the formulas
