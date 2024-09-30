@@ -4,7 +4,7 @@ version = "0.0.7"
 authors = [{ name = "Christian Dalager", email = "christian@dalager.com" }]
 description = "Tool to analyze and visualize dependencies between cells in Excel spreadsheets"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",
