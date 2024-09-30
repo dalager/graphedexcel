@@ -3,16 +3,17 @@
 ## Test PyPi
 
 ```bash
-rimraf .\dist\
+rimraf .\dist\; python -m build; python -m twine upload --repository pypi dist/* --verbose
+```
 
 python -m build
 
-python -m twine upload --repository testpypi dist/* --verbose
+python -m twine upload --repository testpypi dist/\* --verbose
 
-```
+````
 
 ## Installation
 
 ```bash
 pip install -i https://test.pypi.org/simple/ graphedexcel
-```
+````
