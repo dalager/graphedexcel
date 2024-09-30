@@ -110,7 +110,7 @@ Graph visualization saved to images/.\Book1.xlsx.png
 
 More in `/images` folder.
 
-![Sample graph](images/simplified_1.xlsx5.png)
+![Sample graph](docs/images/simplified_1.xlsx5.png)
 
 ## Tests
 
