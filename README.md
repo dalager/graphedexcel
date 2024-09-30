@@ -4,9 +4,7 @@
 
 <img src="docs/images/Book1.xlsx.png" align="right" width="300" alt="Plot from Example Book1.xlsx file">
 
-Python script to visualize dependencies between cells in Excel spreadsheets.
-
-Meant as a tool to visualize and understand the complexity of Excel spreadsheets.
+Tool to analyze and visualize dependencies between cells in Excel spreadsheets in order to get an understanding of the complexity.
 
 Will generate a graph of the dependencies between cells in an Excel spreadsheet. Data extracted with `openpyxl` (<https://foss.heptapod.net/openpyxl/openpyxl>), the graph is generated with the `networkx` library (<https://networkx.org/>) and is visualized using `matplotlib`.
 
