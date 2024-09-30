@@ -1,0 +1,32 @@
+[project]
+name = "graphedexcel"
+version = "0.0.7"
+authors = [{ name = "Christian Dalager", email = "christian@dalager.com" }]
+description = "Tool to analyze and visualize dependencies between cells in Excel spreadsheets"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+dependencies = ["networkx>=3.3", "openpyxl>=3.1", "matplotlib>=3.9"]
+
+[project.optional-dependencies]
+test = ["black==21.9b0", "pytest==8.3"]
+
+[project.urls]
+Homepage = "https://github.com/dalager/graphedexcel"
+Issues = "https://github.com/dalager/graphedexcel/issues"
+
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra"
+testpaths = ["tests"]

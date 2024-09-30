@@ -2,7 +2,7 @@
 
 ![Python Version](https://img.shields.io/badge/python-3.10-blue) ![Python Version](https://img.shields.io/badge/python-3.11-blue) ![Python Version](https://img.shields.io/badge/python-3.12-blue)
 
-<img src="images/Book1.xlsx.png" align="right" width="300" alt="Plot from Example Book1.xlsx file">
+<img src="docs/images/Book1.xlsx.png" align="right" width="300" alt="Plot from Example Book1.xlsx file">
 
 Python script to visualize dependencies between cells in Excel spreadsheets.
 
@@ -51,18 +51,18 @@ A cell within a range is considered a dependency of the range itself, but not of
 
 python -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ## Usage
 
 ```bash
-python graphbuilder.py <path_to_excel_file> [--verbose] [--no-visualize] [--keep-direction] [--open-image]
+python -m graphedexcel <path_to_excel_file> [--verbose] [--no-visualize] [--keep-direction] [--open-image]
 ```
 
 Depending on the size of the spreadsheet you might want to adjust the plot configuration in the code to to make the graph more readable (remove labels, decrease widths and sizes etc)
 
-In [graph_visualizer.py](graph_visualizer.py) you will find three configuration for small, medium and large graphs. You can adjust the configuration to your needs.
+In [graph_visualizer.py](src/graph_visualizer.py) you will find three configuration for small, medium and large graphs. You can adjust the configuration to your needs.
 
 ### Arguments
 
@@ -76,7 +76,7 @@ In [graph_visualizer.py](graph_visualizer.py) you will find three configuration 
 
 ## Sample output
 
-The following is the output of running the script on the provided `Book1.xlsx` file.
+The following is the output of running the script on the provided `docs/Book1.xlsx` file.
 
 ```bash
 ===  Dependency Graph Summary ===
