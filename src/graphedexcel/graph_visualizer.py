@@ -104,7 +104,7 @@ def visualize_dependency_graph(graph, file_path):
 
     plt.legend(handles=legend_patches, title="Sheets", loc="upper left")
 
-    filename = f"images/{file_path}.png"
+    filename = f"{file_path}.png"
     plt.savefig(filename)
     print(f"Graph visualization saved to {filename}")
 

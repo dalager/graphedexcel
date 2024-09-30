@@ -16,6 +16,26 @@ from .excel_parser import extract_references
 functions_dict: Dict[str, int] = {}
 
 
+def extract_formulas_and_build_dependencies(file_path: str) -> tuple[nx.DiGraph, Dict[str, int]]:
+    """
+    Extract formulas from an Excel file and build a dependency graph.
+    """
+    try:
+        wb = load_workbook(file_path, data_only=False)
+    except Exception as e:
+        log(f"Error loading workbook: {e}")
+        sys.exit(1)
+
+    graph = nx.DiGraph()
+
+    for sheet_name in wb.sheetnames:
+        ws = wb[sheet_name]
+        log(f"========== Analyzing sheet: {sheet_name} ==========")
+        sanitized_sheet_name = sanitize_sheetname(sheet_name)
+        process_sheet(ws, sanitized_sheet_name, graph)
+
+    return graph, functions_dict
+
 def log(msg: str) -> None:
     """
     Log a message to the console if verbosity is enabled using the --verbose flag.
@@ -63,25 +83,6 @@ def add_node(graph: nx.DiGraph, node: str, sheet: str) -> None:
     graph.add_node(node, sheet=sheet)
 
 
-def extract_formulas_and_build_dependencies(file_path: str) -> nx.DiGraph:
-    """
-    Extract formulas from an Excel file and build a dependency graph.
-    """
-    try:
-        wb = load_workbook(file_path, data_only=False)
-    except Exception as e:
-        log(f"Error loading workbook: {e}")
-        sys.exit(1)
-
-    graph = nx.DiGraph()
-
-    for sheet_name in wb.sheetnames:
-        ws = wb[sheet_name]
-        log(f"========== Analyzing sheet: {sheet_name} ==========")
-        sanitized_sheet_name = sanitize_sheetname(sheet_name)
-        process_sheet(ws, sanitized_sheet_name, graph)
-
-    return graph
 
 
 def process_sheet(ws, sheet_name: str, graph: nx.DiGraph) -> None:
@@ -172,24 +173,3 @@ def get_range_sheet_name(range_reference: str, sheet_name: str) -> str:
     """
     return sheet_name if "!" not in range_reference else range_reference.split("!")[0]
 
-
-
-
-if __name__ == "__main__":
-    path_to_excel = "Book1.xlsx"
-
-    if len(sys.argv) > 1:
-        path_to_excel = sys.argv[1]
-
-    # Extract formulas and build the dependency graph
-    dependency_graph = extract_formulas_and_build_dependencies(path_to_excel)
-
-    print_summary(dependency_graph, functions_dict)
-
-    # if --no-visualize is not passed as argument
-    if "--no-visualize" not in sys.argv:
-        print(
-            "\033[1;30;40m\nVisualizing the graph of dependencies.\nThis might take a while...\033[0;37;40m\n"  # noqa
-        )
-
-        visualize_dependency_graph(dependency_graph, path_to_excel)
