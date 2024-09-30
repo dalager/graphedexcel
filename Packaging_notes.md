@@ -17,3 +17,16 @@ python -m twine upload --repository testpypi dist/\* --verbose
 ```bash
 pip install -i https://test.pypi.org/simple/ graphedexcel
 ````
+
+## installation from local dist
+
+```bash
+pip install 'C:\projects\dalager\1 Projects\graphedexcel\dist\graphedexcel-0.0.7-py3-none-any.whl' --force-reinstall
+
+```
+
+## Running locally
+
+```bash
+python -m build; pip install -e .
+```
