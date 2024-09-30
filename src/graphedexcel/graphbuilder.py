@@ -7,9 +7,9 @@ from openpyxl import load_workbook
 import networkx as nx
 import re
 import sys
-from graph_visualizer import visualize_dependency_graph
-from graph_summarizer import print_summary
-from excel_parser import extract_references
+from .graph_visualizer import visualize_dependency_graph
+from .graph_summarizer import print_summary
+from .excel_parser import extract_references
 
 # Dictionary that stores the unique functions used in the formulas
 # The key will be the function name and the value will be the number of times it was used

@@ -1,6 +1,6 @@
 [project]
 name = "graphedexcel"
-version = "0.0.6"
+version = "0.0.7"
 authors = [{ name = "Christian Dalager", email = "christian@dalager.com" }]
 description = "Tool to analyze and visualize dependencies between cells in Excel spreadsheets"
 readme = "README.md"
