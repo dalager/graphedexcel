@@ -43,7 +43,15 @@ The way the graph is built is by iterating over all cells in the spreadsheet and
 
 A cell within a range is considered a dependency of the range itself, but not of the other cells in the range.
 
-## Installation
+## Installation from pypi package
+
+PyPi project: [graphedexcel](https://pypi.org/project/graphedexcel/)
+
+```bash
+pip install graphedexcel
+```
+
+## Installation from source
 
 ```bash
 
