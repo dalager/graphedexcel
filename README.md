@@ -17,8 +17,8 @@ Single-cell references in a formula sitting in cell `A3` like `=A1+A2` is consid
 
 ```mermaid
 graph TD
-    A1 --> A3
-    A2 --> A3
+    A3 --> A1
+    A3 --> A1
     A3["=A1 + A2"]
 ```
 
