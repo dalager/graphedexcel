@@ -19,7 +19,7 @@ Single-cell references in a formula sitting in cell `A3` like `=A1+A2` is consid
 graph TD
     A3 --> A1
     A3 --> A2
-    A3["=A1 + A2"]
+    A3["A3=A1+A2"]
 ```
 
 A range defined in a formula like `=SUM(B1:B3)` is kept as a single node in the graph, but all the containing cells are expanded as dependencies of the range node.
