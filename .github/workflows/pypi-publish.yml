@@ -18,6 +18,26 @@ jobs:
         with:
           python-version: "3.x"
 
+      - name: Ensure tag is v-prefixed
+        id: check_tag
+        run: |
+          if [[ "${{ github.ref }}" != refs/tags/v* ]]; then
+            echo "Error: Release tag must be v-prefixed (e.g., v1.0.0)."
+            exit 1
+          fi
+
+      - name: Extract version from release tag
+        id: get_version
+        run: |
+          echo "Release tag: ${{ github.ref }}"
+          VERSION="${{ github.ref#refs/tags/v }}"
+          echo "Version: $VERSION"
+          echo "release_version=$VERSION" >> $GITHUB_ENV
+
+      - name: Update version in pyproject.toml
+        run: |
+          sed -i "s/^version = .*/version = \"${{ env.release_version }}\"/" pyproject.toml
+
       - name: Build release distributions
         run: |
           python -m pip install build
