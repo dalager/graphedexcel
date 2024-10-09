@@ -121,34 +121,38 @@ Look at <https://networkx.org/documentation/stable/reference/generated/networkx.
 
 The default settings for the graph visualization in the various sizes (from `graph_visualizer.py`):
 
-```json
-base_graph_settings: {
-    "node_size": 50,        // the size of the node
-    "width": 0.2,           // the width of the edge between nodes
-    "edge_color": "black",  // the color of the edge between nodes
-    "linewidths": 0,        // the stroke width of the node border
-    "with_labels": false,   // whether to show the node labels
-    "font_size": 10,        // the size of the node labels
-    "cmap": "tab20b",       // the color map to use for the nodes. Look it up.
-    "fig_size": [10,10],    // the dimensions of the plot. 10x10 = 1000x1000 pixels
+```python
+# Default settings for the graph visualization
+base_graph_settings = {
+    "node_size": 50,        # the size of the node
+    "width": 0.2,           # the width of the edge between nodes
+    "edge_color": "black",  # the color of the edge between nodes
+    "linewidths": 0,        # the stroke width of the node border
+    "with_labels": False,   # whether to show the node labels
+    "font_size": 10,        # the size of the node labels
+    "cmap": "tab20b",       # the color map to use for coloring nodes
+    "fig_size": (10, 10),   # the size of the figure
 }
 
-small_graph_settings: {
-    "with_labels": true,
-    "alpha": 0.8,
-}
+# Sized-based settings for small, medium, and large graphs
+small_graph_settings = {
+    "with_labels": False, 
+    "alpha": 0.8}
 
-medium_graph_settings: {
+medium_graph_settings = {
     "node_size": 30,
-    "with_labels": true,
+    "with_labels": False,
     "alpha": 0.4,
+    "fig_size": (20, 20),
 }
 
 large_graph_settings = {
     "node_size": 20,
-    "with_labels": true,
+    "with_labels": False,
     "alpha": 0.2,
+    "fig_size": (25, 25),
 }
+
 ```
 
 ### Custom JSON Configuration
