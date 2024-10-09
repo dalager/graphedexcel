@@ -56,27 +56,37 @@ def merge_configs(default_config: dict, custom_config: dict) -> dict:
 def get_graph_default_settings(graph_size: int, config_path: str = None) -> dict:
     """
     Gets the default settings for the graph visualization based on the number of nodes.
-    And the Fig size based on the number of nodes.
-    """
-    plot_settings = {}
+    Optionally merges with a user-provided JSON config.
 
+    Args:
+        graph_size (int): Number of nodes in the graph.
+        config_path (str, optional): Path to a JSON configuration file.
+
+    Returns:
+        dict: Merged graph settings.
+    """
     if graph_size < 200:
         plot_settings = merge_configs(base_graph_settings, small_graph_settings)
-
     elif graph_size < 500:
         plot_settings = merge_configs(base_graph_settings, medium_graph_settings)
-
     else:
         plot_settings = merge_configs(base_graph_settings, large_graph_settings)
 
     if config_path:
         try:
             custom_settings = load_json_config(config_path)
-            return merge_configs(base_graph_settings, custom_settings)
+            plot_settings = merge_configs(plot_settings, custom_settings)
+        except FileNotFoundError:
+            print(f"Config file not found: {config_path}. Using default settings.")
+        except json.JSONDecodeError:
+            print(
+                f"Invalid JSON format in config file: {config_path}. Using default settings."
+            )
         except Exception as e:
             print(
-                f"Error loading config file: {config_path}, using default settings.\n{e}"
+                f"Error loading config file: {config_path}. Using default settings.\n{e}"
             )
+
     return plot_settings
 
 
