@@ -34,6 +34,11 @@ def extract_formulas_and_build_dependencies(
         sanitized_sheet_name = sanitize_sheetname(sheet_name)
         process_sheet(ws, sanitized_sheet_name, graph)
 
+    # remove unconnected nodes if --remove-unconnected flag is provided
+    if "--remove-unconnected" in sys.argv:
+        print("Removing unconnected nodes from the graph.")
+        graph.remove_nodes_from(list(nx.isolates(graph)))
+
     return graph, functions_dict
 
 

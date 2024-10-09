@@ -118,12 +118,14 @@ def visualize_dependency_graph(
 
     # Set the default settings for the graph visualization based on the number of nodes
     graph_settings = get_graph_default_settings(len(graph.nodes), config_path)
+    print(
+        f"Using the following settings for the graph visualization: \n{graph_settings}"
+    )
 
-    # print graph_settings
-    print(graph_settings)
     plt.figure(figsize=graph_settings["fig_size"])
-    # remove fig_size from the graph_settings, we have already used it
+    # remove fig_size from the graph_settings. Cannot be passed to nx.draw
     graph_settings.pop("fig_size", None)
+
     node_colors = [hash(graph.nodes[node]["sheet"]) % 256 for node in graph.nodes]
     pos = nx.spring_layout(graph)  # layout for nodes
 
