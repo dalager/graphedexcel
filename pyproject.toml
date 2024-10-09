@@ -11,7 +11,12 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
-dependencies = ["networkx>=3.3", "openpyxl>=3.1", "matplotlib>=3.9"]
+dependencies = [
+  "networkx>=3.3",
+  "openpyxl>=3.1",
+  "matplotlib>=3.9",
+  "scipy>=1.14",
+]
 
 [project.optional-dependencies]
 test = ["black==21.9b0", "pytest==8.3"]

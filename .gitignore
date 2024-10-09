@@ -162,3 +162,5 @@ cython_debug/
 #.idea/
 venv/Lib/site-packages
 venv
+*.xlsx
+*.xlsx.png
