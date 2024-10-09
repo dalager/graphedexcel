@@ -1,6 +1,6 @@
 [project]
 name = "graphedexcel"
-version = "0.0.9"
+version = "0.0.0" # set in build pipeline
 authors = [{ name = "Christian Dalager", email = "christian@dalager.com" }]
 description = "Tool to analyze and visualize dependencies between cells in Excel spreadsheets"
 readme = "README.md"
