@@ -8,7 +8,6 @@ Tool to analyze and visualize dependencies between cells in Excel spreadsheets i
 
 Will generate a graph of the dependencies between cells in an Excel spreadsheet. Data extracted with `openpyxl` (<https://foss.heptapod.net/openpyxl/openpyxl>), the graph is generated with the `networkx` library (<https://networkx.org/>) and is visualized using `matplotlib`.
 
-This is a simple tool and maybe even naïve in its approach - it was hacked together in two evenings and would benefit from some refactoring and more features. It is meant as a starting point for further development.
 <br clear="right"/>
 
 ## Definitions
@@ -39,10 +38,6 @@ graph TD
 
 ```
 
-The way the graph is built is by iterating over all cells in the spreadsheet and extracting the references in the formula of each cell. The references are then added as edges in the graph.
-
-A cell within a range is considered a dependency of the range itself, but not of the other cells in the range.
-
 ## Installation from pypi package
 
 PyPi project: [graphedexcel](https://pypi.org/project/graphedexcel/)
@@ -66,13 +61,11 @@ pip install -e .
 python -m graphedexcel <path_to_excel_file> [--verbose] [--no-visualize] [--keep-direction] [--open-image]
 ```
 
-Depending on the size of the spreadsheet you might want to adjust the plot configuration in the code to to make the graph more readable (remove labels, decrease widths and sizes etc)
-
-In [graph_visualizer.py](src/graph_visualizer.py) you will find three configuration for small, medium and large graphs. You can adjust the configuration to your needs.
+Depending on the size of the spreadsheet you might want to adjust the plot configuration in the code to to make the graph more readable (remove labels, decrease widths and sizes etc) - you can find the configuration in [graph_visualizer.py](src/graphedexcel/graph_visualizer.py) with settings for small, medium and large graphs. You can adjust the configuration to your needs - but this only working if you run from source.
 
 ### Arguments
 
-`--verbose` will dump formula cell contents during (more quiet)
+`--verbose` will dump formula cell contents during (more noisy)
 
 `--no-visualize` will skip the visualization step and only print the summary (faster)
 
@@ -82,7 +75,7 @@ In [graph_visualizer.py](src/graph_visualizer.py) you will find three configurat
 
 ## Sample output
 
-The following is the output of running the script on the provided `docs/Book1.xlsx` file.
+The following is the output of running the script on the sample `docs/Book1.xlsx` file.
 
 ```bash
 ===  Dependency Graph Summary ===
@@ -114,14 +107,16 @@ Graph visualization saved to images/.\Book1.xlsx.png
 
 ## Sample plot
 
-More in `/images` folder.
+More in `docs/images` folder.
 
 ![Sample graph](docs/images/simplified_1.xlsx5.png)
 
 ## Tests
 
+Just run pytest in the root folder.
+
 ```bash
-pytest test_cell_reference_extraction.py
+pytest
 ```
 
 ## Contribute
@@ -136,4 +131,3 @@ You can help with the following, that I have thought of so far:
 - Improve the visualization and the ease of configuration
 - Add more examples
 - Add more documentation
-- Package the script for easier installation and use with PyPi
