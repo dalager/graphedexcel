@@ -122,7 +122,7 @@ Look at <https://networkx.org/documentation/stable/reference/generated/networkx.
 The default settings for the graph visualization in the various sizes (from `graph_visualizer.py`):
 
 ```json
-base_graph_settings = {
+base_graph_settings: {
     "node_size": 50,        // the size of the node
     "width": 0.2,           // the width of the edge between nodes
     "edge_color": "black",  // the color of the edge between nodes
@@ -133,12 +133,12 @@ base_graph_settings = {
     "fig_size": [10,10],    // the dimensions of the plot. 10x10 = 1000x1000 pixels
 }
 
-small_graph_settings = {
+small_graph_settings: {
     "with_labels": true,
     "alpha": 0.8,
 }
 
-medium_graph_settings = {
+medium_graph_settings: {
     "node_size": 30,
     "with_labels": true,
     "alpha": 0.4,
