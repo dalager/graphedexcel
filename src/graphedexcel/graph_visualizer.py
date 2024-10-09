@@ -122,19 +122,16 @@ def visualize_dependency_graph(
         f"Using the following settings for the graph visualization: \n{graph_settings}"
     )
 
-    plt.figure(figsize=graph_settings["fig_size"])
-    # remove fig_size from the graph_settings. Cannot be passed to nx.draw
-    graph_settings.pop("fig_size", None)
+    plt.figure(
+        figsize=graph_settings.pop("fig_size", (10, 10))
+    )  # Default to (10, 10) if not set
 
-    node_colors = [hash(graph.nodes[node]["sheet"]) % 256 for node in graph.nodes]
-    pos = nx.spring_layout(graph)  # layout for nodes
+    pos = nx.spring_layout(graph)  # Layout for nodes
 
-    # add legends for the colors
+    # Assign colors and get legend patches
     node_colors, legend_patches = get_node_colors_and_legend(
-        graph, graph_settings["cmap"]
+        graph, graph_settings.pop("cmap", "tab20b")
     )
-    # remove 'cmap' from the graph_settings, we have already used it
-    graph_settings.pop("cmap", None)
 
     nx.draw(
         graph,
@@ -146,11 +143,12 @@ def visualize_dependency_graph(
     plt.legend(handles=legend_patches, title="Sheets", loc="upper left")
 
     filename = f"{file_path}.png"
-    plt.savefig(filename)
+    plt.savefig(filename, bbox_inches="tight")  # Ensure layout fits
+    plt.close()  # Close the figure to free memory
     print(f"Graph visualization saved to {filename}")
 
-    # open the image file in windows
+    # Open the image file on Windows if specified
     if sys.platform == "win32" and "--open-image" in sys.argv:
         import os
 
-        os.system(f"start {filename}")
+        os.startfile(filename)  # Use os.startfile for better compatibility
