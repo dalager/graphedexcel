@@ -115,7 +115,7 @@ More in `docs/images` folder.
 
 You can customize the graph visualization settings by passing a path to a JSON configuration file. This allows you to override the default settings with your own preferences.
 
-Look at https://networkx.org/documentation/stable/reference/generated/networkx.drawing.nx_pylab.draw_networkx.html for the available settings.
+Look at <https://networkx.org/documentation/stable/reference/generated/networkx.drawing.nx_pylab.draw_networkx.html> for the available settings.
 
 ### Default Settings
 
@@ -129,7 +129,8 @@ base_graph_settings = {
     "linewidths": 0,        // the stroke width of the node border
     "with_labels": false,   // whether to show the node labels
     "font_size": 10,        // the size of the node labels
-    "cmap": "tab20b",       // the color map to use for the nodes.
+    "cmap": "tab20b",       // the color map to use for the nodes. Look it up.
+    "fig_size": [10,10],    // the dimensions of the plot. 10x10 = 1000x1000 pixels
 }
 
 small_graph_settings = {
