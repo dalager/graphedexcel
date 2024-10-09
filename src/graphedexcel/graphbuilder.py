@@ -7,8 +7,6 @@ from openpyxl import load_workbook
 import networkx as nx
 import re
 import sys
-from .graph_visualizer import visualize_dependency_graph
-from .graph_summarizer import print_summary
 from .excel_parser import extract_references
 
 # Dictionary that stores the unique functions used in the formulas
@@ -16,12 +14,14 @@ from .excel_parser import extract_references
 functions_dict: Dict[str, int] = {}
 
 
-def extract_formulas_and_build_dependencies(file_path: str) -> tuple[nx.DiGraph, Dict[str, int]]:
+def extract_formulas_and_build_dependencies(
+    file_path: str,
+) -> tuple[nx.DiGraph, Dict[str, int]]:
     """
     Extract formulas from an Excel file and build a dependency graph.
     """
     try:
-        wb = load_workbook(file_path, data_only=False)
+        wb = load_workbook(file_path, data_only=False, read_only=True)
     except Exception as e:
         log(f"Error loading workbook: {e}")
         sys.exit(1)
@@ -35,6 +35,7 @@ def extract_formulas_and_build_dependencies(file_path: str) -> tuple[nx.DiGraph,
         process_sheet(ws, sanitized_sheet_name, graph)
 
     return graph, functions_dict
+
 
 def log(msg: str) -> None:
     """
@@ -81,8 +82,6 @@ def add_node(graph: nx.DiGraph, node: str, sheet: str) -> None:
     log(f"Adding node: {node} in sheet: {sheet}")
     sheet = sanitize_sheetname(sheet)
     graph.add_node(node, sheet=sheet)
-
-
 
 
 def process_sheet(ws, sheet_name: str, graph: nx.DiGraph) -> None:
@@ -172,4 +171,3 @@ def get_range_sheet_name(range_reference: str, sheet_name: str) -> str:
     Get the sheet name for a range reference.
     """
     return sheet_name if "!" not in range_reference else range_reference.split("!")[0]
-

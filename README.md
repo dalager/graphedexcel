@@ -111,6 +111,70 @@ More in `docs/images` folder.
 
 ![Sample graph](docs/images/simplified_1.xlsx5.png)
 
+## Customizing Graph Visualization Settings
+
+You can customize the graph visualization settings by passing a path to a JSON configuration file. This allows you to override the default settings with your own preferences.
+
+Look at <https://networkx.org/documentation/stable/reference/generated/networkx.drawing.nx_pylab.draw_networkx.html> for the available settings.
+
+### Default Settings
+
+The default settings for the graph visualization in the various sizes (from `graph_visualizer.py`):
+
+```json
+base_graph_settings = {
+    "node_size": 50,        // the size of the node
+    "width": 0.2,           // the width of the edge between nodes
+    "edge_color": "black",  // the color of the edge between nodes
+    "linewidths": 0,        // the stroke width of the node border
+    "with_labels": false,   // whether to show the node labels
+    "font_size": 10,        // the size of the node labels
+    "cmap": "tab20b",       // the color map to use for the nodes. Look it up.
+    "fig_size": [10,10],    // the dimensions of the plot. 10x10 = 1000x1000 pixels
+}
+
+small_graph_settings = {
+    "with_labels": true,
+    "alpha": 0.8,
+}
+
+medium_graph_settings = {
+    "node_size": 30,
+    "with_labels": true,
+    "alpha": 0.4,
+}
+
+large_graph_settings = {
+    "node_size": 20,
+    "with_labels": true,
+    "alpha": 0.2,
+}
+```
+
+### Custom JSON Configuration
+
+To override these settings, create a JSON file (e.g., graph_settings.json) with the desired settings. Here is an example of a JSON configuration file:
+
+```json
+{
+  "node_size": 40,
+  "edge_color": "blue",
+  "with_labels": true,
+  "font_size": 12,
+  "alpha": 0.6
+}
+```
+
+### Using the Custom Configuration
+
+To use the custom configuration, pass the path to the JSON file as an argument to the script:
+
+```bash
+python -m graphedexcel <path_to_excel_file> --config <path to grap_settings.json>
+```
+
+This will render the graph using the custom settings defined in the JSON file.
+
 ## Tests
 
 Just run pytest in the root folder.
