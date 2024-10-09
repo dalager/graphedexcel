@@ -8,6 +8,10 @@ import networkx as nx
 import re
 import sys
 from .excel_parser import extract_references
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 # Dictionary that stores the unique functions used in the formulas
 # The key will be the function name and the value will be the number of times it was used
@@ -23,31 +27,23 @@ def extract_formulas_and_build_dependencies(
     try:
         wb = load_workbook(file_path, data_only=False, read_only=True)
     except Exception as e:
-        log(f"Error loading workbook: {e}")
+        logger.error(f"Error loading workbook: {e}")
         sys.exit(1)
 
     graph = nx.DiGraph()
 
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
-        log(f"========== Analyzing sheet: {sheet_name} ==========")
+        logger.debug(f"========== Analyzing sheet: {sheet_name} ==========")
         sanitized_sheet_name = sanitize_sheetname(sheet_name)
         process_sheet(ws, sanitized_sheet_name, graph)
 
     # remove unconnected nodes if --remove-unconnected flag is provided
     if "--remove-unconnected" in sys.argv:
-        print("Removing unconnected nodes from the graph.")
+        logger.info("Removing unconnected nodes from the graph.")
         graph.remove_nodes_from(list(nx.isolates(graph)))
 
     return graph, functions_dict
-
-
-def log(msg: str) -> None:
-    """
-    Log a message to the console if verbosity is enabled using the --verbose flag.
-    """
-    if "--verbose" in sys.argv:
-        print(msg)
 
 
 def sanitize_sheetname(sheetname: str) -> str:
@@ -74,7 +70,7 @@ def stat_functions(cellvalue: str) -> None:
     This will be used to print the most used functions in the formulas.
     """
     cellfuncs = re.findall(r"[A-Z]+\(", cellvalue)
-    log(f"  Functions used: {functions_dict}")
+    logger.debug(f"  Functions used: {functions_dict}")
     for function in cellfuncs:
         function = function[:-1]  # Remove the "(" from the function name
         functions_dict[function] = functions_dict.get(function, 0) + 1
@@ -84,7 +80,7 @@ def add_node(graph: nx.DiGraph, node: str, sheet: str) -> None:
     """
     Add a node to the graph with the specified sheet name.
     """
-    log(f"Adding node: {node} in sheet: {sheet}")
+    logger.debug(f"Adding node: {node} in sheet: {sheet}")
     sheet = sanitize_sheetname(sheet)
     graph.add_node(node, sheet=sheet)
 
@@ -105,7 +101,7 @@ def process_formula_cell(cell, sheet_name: str, graph: nx.DiGraph) -> None:
     """
     stat_functions(cell.value)
     cell_reference = f"{sheet_name}!{cell.coordinate}"
-    log(f"Formula in {cell_reference}: {cell.value}")
+    logger.debug(f"Formula in {cell_reference}: {cell.value}")
     add_node(graph, cell_reference, sheet_name)
 
     direct_references, range_references, range_dependencies = extract_references(
@@ -124,7 +120,7 @@ def add_references_to_graph(
     """
     for cell_reference in references:
         cell_reference = format_reference(cell_reference, sheet_name)
-        log(f"  Cell: {cell_reference}")
+        logger.debug(f"  Cell: {cell_reference}")
         add_node(graph, cell_reference, sheet_name)
         graph.add_edge(current_cell, cell_reference)
 
@@ -138,7 +134,7 @@ def add_ranges_to_graph(
     for range_reference in ranges:
         range_sheet_name = get_range_sheet_name(range_reference, sheet_name)
         range_reference = format_reference(range_reference, sheet_name)
-        log(f"  Range: {range_reference}")
+        logger.debug(f"  Range: {range_reference}")
         add_node(graph, range_reference, range_sheet_name)
         graph.add_edge(current_cell, range_reference)
 

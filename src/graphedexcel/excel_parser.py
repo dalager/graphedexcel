@@ -1,9 +1,13 @@
 from openpyxl.utils import get_column_letter, range_boundaries
 import re
 from typing import List, Tuple, Dict
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Regex to detect cell references like A1, B2, or ranges like A1:B2
 CELL_REF_REGEX = r"('?[A-Za-z0-9_\-\[\] ]+'?![A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)|([A-Z]{1,3}[0-9]+(:[A-Z]{1,3}[0-9]+)?)"  # noqa
+
 
 def extract_references(formula: str) -> Tuple[List[str], List[str], Dict[str, str]]:
     """
@@ -42,6 +46,7 @@ def extract_references(formula: str) -> Tuple[List[str], List[str], Dict[str, st
 
     return direct_references, range_references, dependencies
 
+
 def expand_range(range_reference: str) -> List[str]:
     """
     Expand a range reference (e.g., 'A1:A3') into a list of individual cell references.
@@ -71,5 +76,3 @@ def expand_range(range_reference: str) -> List[str]:
                 expanded_cells.append(cell_ref)
 
     return expanded_cells
-
-
