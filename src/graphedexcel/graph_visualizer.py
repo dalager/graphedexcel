@@ -56,7 +56,7 @@ def get_graph_default_settings(graph_size):
 # Function to get colors and generate legend for sheets
 def get_node_colors_and_legend(graph):
     sheets = {data.get("sheet", "Sheet1") for _, data in graph.nodes(data=True)}
-    color_map = cm.get_cmap("tab20c", len(sheets))
+    color_map = cm.get_cmap("tab20b", len(sheets))
 
     # Map sheet names to colors
     sheet_to_color = {sheet: color_map(i) for i, sheet in enumerate(sheets)}
