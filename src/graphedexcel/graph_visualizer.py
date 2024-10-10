@@ -179,6 +179,10 @@ def visualize_dependency_graph(
         pos = nx.kamada_kawai_layout(graph)
     elif layout == "circular":
         pos = nx.circular_layout(graph)
+    elif layout == "shell":
+        pos = nx.shell_layout(graph)
+    elif layout == "spectral":
+        pos = nx.spectral_layout(graph)
     else:
         logger.warning(f"Unknown layout '{layout}'. Falling back to spring layout.")
         pos = nx.spring_layout(graph)
