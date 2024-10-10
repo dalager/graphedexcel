@@ -197,7 +197,5 @@ def visualize_dependency_graph(
 
     plt.legend(handles=legend_patches, title="Sheets", loc="upper left")
 
-    plt.savefig(output_path, bbox_inches="tight")  # Ensure layout fits
+    plt.savefig(output_path, bbox_inches="tight")
     plt.close()  # Close the figure to free memory
-
-    logger.info(f"Graph visualization saved to {output_path}")
