@@ -23,13 +23,6 @@ def parse_arguments():
 
     # Optional flags with shorthand aliases
     parser.add_argument(
-        "--remove-unconnected",
-        "-r",
-        action="store_true",
-        help="Remove unconnected nodes from the dependency graph.",
-    )
-
-    parser.add_argument(
         "--as-directed-graph",
         "-d",
         action="store_true",
@@ -89,7 +82,6 @@ def main():
     # Build the dependency graph and gather statistics
     dependency_graph, function_stats = build_graph_and_stats(
         path_to_excel,
-        remove_unconnected=args.remove_unconnected,
         as_directed=args.as_directed_graph,
     )
 

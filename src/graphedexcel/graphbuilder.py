@@ -20,7 +20,6 @@ functions_dict: Dict[str, int] = {}
 
 def build_graph_and_stats(
     file_path: str,
-    remove_unconnected: bool = False,
     as_directed: bool = False,
 ) -> tuple[nx.DiGraph, Dict[str, int]]:
     """
@@ -46,10 +45,10 @@ def build_graph_and_stats(
     else:
         logger.info("Preserving the graph as a directed graph.")
 
-    # remove unconnected nodes if --remove-unconnected flag is provided
-    if remove_unconnected:
-        logger.info("Removing unconnected nodes from the graph.")
-        graph.remove_nodes_from(list(nx.isolates(graph)))
+    # remove selfloops
+    graph.remove_edges_from(nx.selfloop_edges(graph))
+
+    graph.remove_nodes_from(list(nx.isolates(graph)))
 
     return graph, functions_dict
 
@@ -59,6 +58,13 @@ def sanitize_sheetname(sheetname: str) -> str:
     Remove any special characters from the sheet name.
     """
     return sheetname.replace("'", "")
+
+
+def sanitize_nodename(nodename: str) -> str:
+    """
+    Remove any special characters from the node name.
+    """
+    return nodename.replace("'", "")
 
 
 def sanitize_range(rangestring: str) -> str:
@@ -90,6 +96,7 @@ def add_node(graph: nx.DiGraph, node: str, sheet: str) -> None:
     """
     logger.debug(f"Adding node: {node} in sheet: {sheet}")
     sheet = sanitize_sheetname(sheet)
+    node = sanitize_nodename(node)
     graph.add_node(node, sheet=sheet)
 
 

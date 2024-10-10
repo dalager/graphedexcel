@@ -64,7 +64,7 @@ def test_visualize_dependency_graph(tmp_path):
 def test_provided_config_path(tmp_path):
     G = create_two_node_graph()
 
-    config_data = {"node_size": 50, "width": 0.2}
+    config_data = {"node_size": 50, "width": 0.2, "fig_size": [4, 4]}
     config_file = tmp_path / "test_config.json"
     with open(config_file, "w") as f:
         json.dump(config_data, f)
@@ -73,15 +73,16 @@ def test_provided_config_path(tmp_path):
     visualize_dependency_graph(G, str(file_path), config_path=config_file)
 
 
-def test_invalid_config_path_will_not_break(tmp_path):
+def test_invalid_config_path_will_not_break(tmp_path, caplog):
     G = create_two_node_graph()
 
     file_path = tmp_path / "test_graph"
     visualize_dependency_graph(G, str(file_path), config_path="invalid_path.json")
+    assert "Config file not found" in caplog.text
     assert file_path.with_suffix(".png").exists()
 
 
-def test_invalid_json_in_config_will_not_break(tmp_path):
+def test_invalid_json_in_config_will_not_break(tmp_path, caplog):
     G = nx.DiGraph()
     config_data = {"node_size": 50, "width": 0.2}
     config_file = tmp_path / "test_config.json"
@@ -94,6 +95,7 @@ def test_invalid_json_in_config_will_not_break(tmp_path):
         f.write(data[1:])
     file_path = tmp_path / "test_graph"
     visualize_dependency_graph(G, str(file_path), config_path=config_file)
+    assert "Invalid JSON format in config file" in caplog.text
     assert file_path.with_suffix(".png").exists()
 
 
