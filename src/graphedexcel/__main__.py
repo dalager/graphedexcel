@@ -5,7 +5,7 @@ import logging
 from .graphbuilder import build_graph_and_stats
 from .graph_summarizer import print_summary
 from .graph_visualizer import visualize_dependency_graph
-import src.graphedexcel.logger_config  # noqa
+from graphedexcel import logger_config  # noqa: F401
 
 logger = logging.getLogger("graphedexcel.main")
 
