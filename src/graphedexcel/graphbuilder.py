@@ -21,6 +21,7 @@ functions_dict: Dict[str, int] = {}
 def build_graph_and_stats(
     file_path: str,
     remove_unconnected: bool = False,
+    as_directed: bool = False,
 ) -> tuple[nx.DiGraph, Dict[str, int]]:
     """
     Extract formulas from an Excel file and build a dependency graph.
@@ -38,6 +39,12 @@ def build_graph_and_stats(
         logger.debug(f"========== Analyzing sheet: {sheet_name} ==========")
         sanitized_sheet_name = sanitize_sheetname(sheet_name)
         process_sheet(ws, sanitized_sheet_name, graph)
+
+    if not as_directed:
+        # Convert the graph to an undirected graph
+        graph = graph.to_undirected()
+    else:
+        logger.info("Preserving the graph as a directed graph.")
 
     # remove unconnected nodes if --remove-unconnected flag is provided
     if remove_unconnected:

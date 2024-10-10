@@ -111,8 +111,13 @@ def get_graph_default_settings(graph_size: int, config_path: str = None) -> dict
 
 def calculate_fig_size(graph_size: int) -> tuple:
     base_size = 10
+    max_size = 30  # prevents the figure from eating the world
     scaling_factor = max(1, graph_size / 100)
-    return (base_size * scaling_factor, base_size * scaling_factor)
+
+    return (
+        min(max_size, base_size * scaling_factor),
+        min(max_size, base_size * scaling_factor),
+    )
 
 
 def get_node_colors_and_legend(graph: nx.DiGraph, cmap_id: str) -> tuple[list, list]:
@@ -149,10 +154,6 @@ def visualize_dependency_graph(
     """
     Render the dependency graph using matplotlib and networkx.
     """
-
-    if "--keep-direction" not in sys.argv:
-        # Convert the graph to an undirected graph
-        graph = graph.to_undirected()
 
     # Set the default settings for the graph visualization based on the number of nodes
     graph_settings = get_graph_default_settings(len(graph.nodes), config_path)

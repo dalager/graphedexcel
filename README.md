@@ -58,7 +58,7 @@ pip install -e .
 ## Usage
 
 ```bash
-python -m graphedexcel <path_to_excel_file> [--verbose] [--no-visualize] [--keep-direction] [--open-image]
+python -m graphedexcel <path_to_excel_file> [--verbose] [--no-visualize] [--as-directed-graph] [--open-image]
 ```
 
 Depending on the size of the spreadsheet you might want to adjust the plot configuration in the code to to make the graph more readable (remove labels, decrease widths and sizes etc) - you can find the configuration in [graph_visualizer.py](src/graphedexcel/graph_visualizer.py) with settings for small, medium and large graphs. You can adjust the configuration to your needs - but this only working if you run from source.
@@ -69,7 +69,7 @@ Depending on the size of the spreadsheet you might want to adjust the plot confi
 
 `--no-visualize` will skip the visualization step and only print the summary (faster)
 
-`--keep-direction` will keep the direction of the graph as it is in the excel file, otherwise it will be simplified to an undirected graph (slower)
+`--as-directed-graph` will keep the direction of the graph as it is in the excel file and it will be visualized with arrows, otherwise it will be simplified to an undirected graph (slower)
 
 `--open-image` will open the generated image in the default image viewer (only on Windows)
 
@@ -136,7 +136,7 @@ base_graph_settings = {
 
 # Sized-based settings for small, medium, and large graphs
 small_graph_settings = {
-    "with_labels": False, 
+    "with_labels": False,
     "alpha": 0.8}
 
 medium_graph_settings = {

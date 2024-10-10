@@ -21,9 +21,12 @@ if __name__ == "__main__":
         sys.exit(1)
 
     remove_unconnected = "--remove-unconnected" in sys.argv
+    as_directed_graph = "--as-directed-graph" in sys.argv
     # Extract formulas and build the dependency graph
     dependency_graph, function_stats = build_graph_and_stats(
-        path_to_excel, remove_unconnected
+        path_to_excel,
+        remove_unconnected=remove_unconnected,
+        as_directed=as_directed_graph,
     )
 
     print_summary(dependency_graph, function_stats)
