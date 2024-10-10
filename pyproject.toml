@@ -19,8 +19,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["black==21.9b0", "pytest==8.3"]
-
+test = [
+  "black==21.9b0",
+  "pytest==8.3",
+  "pytest-cov>=3.0.0", # Added for coverage reporting
+  "flake8>=6.0.0",     # Ensure flake8 is included here for consistency
+  "codecov>=2.1.11",   # (Optional) If you intend to use Codecov's Python package]
+]
 [project.urls]
 Homepage = "https://github.com/dalager/graphedexcel"
 Issues = "https://github.com/dalager/graphedexcel/issues"
@@ -33,5 +38,5 @@ build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "-ra"
+addopts = "-ra --cov=graphedexcel --cov-report=xml --cov-report=term"
 testpaths = ["tests"]

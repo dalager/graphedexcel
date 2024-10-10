@@ -17,22 +17,77 @@ jobs:
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
+      # 1. Check out the repository
       - uses: actions/checkout@v4
+
+      # 2. Set up Python environment
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+
+      # 3. Cache pip dependencies based on pyproject.toml and setup.cfg (if any)
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml', '**/setup.cfg') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # 4. Install build requirements
+      - name: Install build requirements
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          pip install flake8
-      - name: Lint with flake8
+
+      # 5. Install project dependencies
+      - name: Install dependencies
         run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Test with pytest
+          pip install .
+
+      # 6. Cache test dependencies
+      - name: Cache test dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-test-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-test-
+
+      # 7. Install test and lint dependencies
+      - name: Install test and lint dependencies
         run: |
           pip install .[test]
-          pytest
+          pip install flake8
+
+      # 8. Lint with flake8 - Errors
+      - name: Lint with flake8 (Errors)
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        continue-on-error: false
+
+      # 9. Lint with flake8 - Warnings
+      - name: Lint with flake8 (Warnings)
+        run: |
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        continue-on-error: true
+
+      # 10. Run tests with pytest
+      - name: Test with pytest
+        run: |
+          pytest --junitxml=reports/junit.xml --cov=graphedexcel --cov-report=xml
+
+      # 11. Upload test coverage to Codecov (Optional)
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+          # 12. Upload Test Reports (Optional)
+      - name: Upload Test Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit-test-report
+          path: reports/junit.xml
