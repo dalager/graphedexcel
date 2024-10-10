@@ -19,7 +19,7 @@ def extract_references(formula: str) -> Tuple[List[str], List[str], Dict[str, st
 
     Returns:
         Tuple[List[str], List[str], Dict[str, str]]: A tuple containing lists of direct references,
-                                                     range references, and a dictionary of dependencies.
+        range references, and a dictionary of dependencies.
     """
     formula = formula.replace("$", "")
     matches = re.findall(CELL_REF_REGEX, formula)
