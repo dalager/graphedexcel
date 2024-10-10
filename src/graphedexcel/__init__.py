@@ -1,3 +1,2 @@
 import sys
-from .graphbuilder import extract_formulas_and_build_dependencies
-
+from .graphbuilder import build_graph_and_stats

@@ -18,8 +18,9 @@ logger = logging.getLogger(__name__)
 functions_dict: Dict[str, int] = {}
 
 
-def extract_formulas_and_build_dependencies(
+def build_graph_and_stats(
     file_path: str,
+    remove_unconnected: bool = False,
 ) -> tuple[nx.DiGraph, Dict[str, int]]:
     """
     Extract formulas from an Excel file and build a dependency graph.
@@ -39,7 +40,7 @@ def extract_formulas_and_build_dependencies(
         process_sheet(ws, sanitized_sheet_name, graph)
 
     # remove unconnected nodes if --remove-unconnected flag is provided
-    if "--remove-unconnected" in sys.argv:
+    if remove_unconnected:
         logger.info("Removing unconnected nodes from the graph.")
         graph.remove_nodes_from(list(nx.isolates(graph)))
 

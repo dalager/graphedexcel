@@ -1,6 +1,6 @@
 import os
 import sys
-from .graphbuilder import extract_formulas_and_build_dependencies
+from .graphbuilder import build_graph_and_stats
 from .graph_summarizer import print_summary
 from .graph_visualizer import visualize_dependency_graph
 import logging
@@ -20,10 +20,13 @@ if __name__ == "__main__":
         logger.error(f"File not found: {path_to_excel}")
         sys.exit(1)
 
+    remove_unconnected = "--remove-unconnected" in sys.argv
     # Extract formulas and build the dependency graph
-    dependency_graph, functions = extract_formulas_and_build_dependencies(path_to_excel)
+    dependency_graph, function_stats = build_graph_and_stats(
+        path_to_excel, remove_unconnected
+    )
 
-    print_summary(dependency_graph, functions)
+    print_summary(dependency_graph, function_stats)
 
     if "--no-visualize" in sys.argv:
         logger.info("Skipping visualization.")
