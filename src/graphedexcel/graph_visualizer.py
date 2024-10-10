@@ -9,17 +9,11 @@ import sys
 
 import logging
 
+logger = logging.getLogger(__name__)
+
 # Use a non-interactive backend for matplotlib.
 # No need to show plots, just save them.
 matplotlib.use("Agg")
-
-# Configure logging at the top of your script
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[logging.StreamHandler()],
-)
-
 
 # Default settings for the graph visualization
 base_graph_settings = {
@@ -99,16 +93,16 @@ def get_graph_default_settings(graph_size: int, config_path: str = None) -> dict
             custom_settings = load_json_config(config_path)
             plot_settings = merge_configs(plot_settings, custom_settings)
         except FileNotFoundError:
-            logging.error(
+            logger.error(
                 f"Config file not found: {config_path}. Using default settings."
             )
 
         except json.JSONDecodeError:
-            logging.error(
+            logger.error(
                 f"Invalid JSON format in config file: {config_path}. Using default settings."
             )
         except Exception as e:
-            logging.error(
+            logger.error(
                 f"Error loading config file: {config_path}. Using default settings.\n{e}"
             )
 
@@ -147,7 +141,11 @@ def get_node_colors_and_legend(graph: nx.DiGraph, cmap_id: str) -> tuple[list, l
 
 
 def visualize_dependency_graph(
-    graph: nx.DiGraph, file_path: str, config_path: str = None, layout: str = "spring"
+    graph: nx.DiGraph,
+    file_path: str,
+    output_path: str,
+    config_path: str = None,
+    layout: str = "spring",
 ):
     """
     Render the dependency graph using matplotlib and networkx.
@@ -160,17 +158,17 @@ def visualize_dependency_graph(
     # Set the default settings for the graph visualization based on the number of nodes
     graph_settings = get_graph_default_settings(len(graph.nodes), config_path)
 
-    logging.info(
-        f"Using the following settings for the graph visualization: \n{graph_settings}"
+    logger.info(
+        f"Using the following settings for the graph visualization: {graph_settings}"
     )
 
     fig_size = calculate_fig_size(len(graph.nodes))
-    logging.info(f"Calculated figure size: {fig_size}")
+    logger.info(f"Calculated figure size: {fig_size}")
 
     figsize_override = graph_settings.pop("fig_size", None)
     # Remove fig_size from graph_settings
     if figsize_override:
-        logging.info(f"Using size from settings: {figsize_override}")
+        logger.info(f"Using size from settings: {figsize_override}")
         fig_size = figsize_override
     plt.figure(figsize=fig_size)
 
@@ -182,7 +180,7 @@ def visualize_dependency_graph(
     elif layout == "circular":
         pos = nx.circular_layout(graph)
     else:
-        logging.warning(f"Unknown layout '{layout}'. Falling back to spring layout.")
+        logger.warning(f"Unknown layout '{layout}'. Falling back to spring layout.")
         pos = nx.spring_layout(graph)
 
     # Assign colors and get legend patches
@@ -199,14 +197,7 @@ def visualize_dependency_graph(
 
     plt.legend(handles=legend_patches, title="Sheets", loc="upper left")
 
-    filename = f"{file_path}.png"
-    plt.savefig(filename, bbox_inches="tight")  # Ensure layout fits
+    plt.savefig(output_path, bbox_inches="tight")  # Ensure layout fits
     plt.close()  # Close the figure to free memory
 
-    logging.info(f"Graph visualization saved to {filename}")
-
-    # Open the image file on Windows if specified
-    if "--open-image" in sys.argv:
-        import os
-
-        os.startfile(filename)
+    logger.info(f"Graph visualization saved to {output_path}")

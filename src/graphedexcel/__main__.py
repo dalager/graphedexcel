@@ -6,7 +6,7 @@ from .graph_visualizer import visualize_dependency_graph
 import logging
 import src.graphedexcel.logger_config  # noqa
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("graphedexcel.main")
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -25,22 +25,34 @@ if __name__ == "__main__":
 
     print_summary(dependency_graph, functions)
 
-    if "--no-visualize" not in sys.argv:
-        logger.info(
-            "\033[1;30;40m\nVisualizing the graph of dependencies.\nThis might take a while...\033[0;37;40m\n"  # noqa
-        )
+    if "--no-visualize" in sys.argv:
+        logger.info("Skipping visualization.")
+        sys.exit(0)
 
-        # if commandline argument --config is provided with a path to a JSON file, pass that path to the visualizer
-        if "--layout" in sys.argv:
-            layout_index = sys.argv.index("--layout")
-            layout = sys.argv[layout_index + 1]
-        else:
-            layout = "spring"
+    logger.info("Visualizing the graph of dependencies. (This might take a while...)")
 
-        if "--config" in sys.argv:
-            config_index = sys.argv.index("--config")
-            config_path = sys.argv[config_index + 1]
-        else:
-            config_path = None
+    if "--layout" in sys.argv:
+        layout_index = sys.argv.index("--layout")
+        layout = sys.argv[layout_index + 1]
+    else:
+        layout = "spring"
 
-        visualize_dependency_graph(dependency_graph, path_to_excel, config_path, layout)
+    if "--config" in sys.argv:
+        config_index = sys.argv.index("--config")
+        config_path = sys.argv[config_index + 1]
+    else:
+        config_path = None
+
+    filename = f"{path_to_excel}_dependency_graph.png"
+
+    if "--output-path" in sys.argv:
+        output_index = sys.argv.index("--output-path")
+        filename = sys.argv[output_index + 1]
+
+    visualize_dependency_graph(
+        dependency_graph, path_to_excel, filename, config_path, layout
+    )
+
+    # Open the image file
+    if "--open-image" in sys.argv:
+        os.startfile(filename)

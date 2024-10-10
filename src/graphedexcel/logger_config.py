@@ -13,11 +13,17 @@ logging_config = {
         "simple": {
             "format": "%(levelname)s: %(message)s",
         },
+        "minimal": {"format": "%(message)s"},
     },
     "handlers": {
         "console": {
             "level": "INFO",
             "formatter": "simple",
+            "class": "logging.StreamHandler",
+        },
+        "minimalconsole": {
+            "level": "INFO",
+            "formatter": "minimal",
             "class": "logging.StreamHandler",
         },
         "file": {
@@ -27,16 +33,16 @@ logging_config = {
             "filename": "app.log",
             "encoding": "utf8",
             "mode": "w",  # 'a' for append, 'w' for overwrite
-        },  # You can add more handlers (e.g., FileHandler) here
+        },
     },
     "loggers": {
-        "": {  # Root logger
+        "graphedexcel": {
             "handlers": ["console", "file"],
             "level": "DEBUG",
             "propagate": False,
         },
-        # Define loggers for specific modules if needed
     },
+    "root": {"handlers": ["minimalconsole"], "level": "WARNING"},
 }
 
 logging.config.dictConfig(logging_config)
