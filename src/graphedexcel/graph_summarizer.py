@@ -1,16 +1,20 @@
 from collections import Counter
+import networkx as nx
 
 
-def print_summary(graph, functionsdict):
+def print_summary(graph: nx.Graph, functionsdict: dict[str, int]) -> None:
     """
-    Summarize a networkx DiGraph representing a dependency graph and print the most used functions in the formulas.
+    Summarize a networkx DiGraph representing a dependency
+    graph and print the most used functions in the formulas.
     """
     strpadsize = 28
     numpadsize = 5
 
+    print()
     print_basic_info(graph, strpadsize, numpadsize)
     print_highest_degree_nodes(graph, strpadsize, numpadsize)
     print_most_used_functions(functionsdict, strpadsize, numpadsize)
+    print()
 
 
 def print_basic_info(graph, strpadsize, numpadsize):

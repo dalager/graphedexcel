@@ -58,20 +58,37 @@ pip install -e .
 ## Usage
 
 ```bash
-python -m graphedexcel <path_to_excel_file> [--verbose] [--no-visualize] [--keep-direction] [--open-image]
+python -m graphedexcel <path_to_excel_file>
 ```
 
-Depending on the size of the spreadsheet you might want to adjust the plot configuration in the code to to make the graph more readable (remove labels, decrease widths and sizes etc) - you can find the configuration in [graph_visualizer.py](src/graphedexcel/graph_visualizer.py) with settings for small, medium and large graphs. You can adjust the configuration to your needs - but this only working if you run from source.
+### Parameters from `--help`
 
-### Arguments
+```
+usage: graphedexcel [-h] [--remove-unconnected] [--as-directed-graph] [--no-visualize]
+                    [--layout {spring,circular,kamada_kawai,shell,spectral}] [--config CONFIG]
+                    [--output-path OUTPUT_PATH] [--open-image]
+                    path_to_excel
 
-`--verbose` will dump formula cell contents during (more noisy)
+Process an Excel file to build and visualize dependency graphs.
 
-`--no-visualize` will skip the visualization step and only print the summary (faster)
+positional arguments:
+  path_to_excel         Path to the Excel file to process.
 
-`--keep-direction` will keep the direction of the graph as it is in the excel file, otherwise it will be simplified to an undirected graph (slower)
-
-`--open-image` will open the generated image in the default image viewer (only on Windows)
+options:
+  -h, --help            show this help message and exit
+  --remove-unconnected, -r
+                        Remove unconnected nodes from the dependency graph.
+  --as-directed-graph, -d
+                        Treat the dependency graph as directed.
+  --no-visualize, -n    Skip the visualization of the dependency graph.
+  --layout,-l {spring,circular,kamada_kawai,shell,spectral}
+                        Layout algorithm for graph visualization (default: spring).
+  --config CONFIG, -c CONFIG
+                        Path to the configuration file for visualization. See README for details.
+  --output-path OUTPUT_PATH, -o OUTPUT_PATH
+                        Specify the output path for the generated graph image.
+  --open-image          Open the generated image after visualization.
+```
 
 ## Sample output
 
@@ -136,7 +153,7 @@ base_graph_settings = {
 
 # Sized-based settings for small, medium, and large graphs
 small_graph_settings = {
-    "with_labels": False, 
+    "with_labels": False,
     "alpha": 0.8}
 
 medium_graph_settings = {
@@ -174,7 +191,7 @@ To override these settings, create a JSON file (e.g., graph_settings.json) with 
 To use the custom configuration, pass the path to the JSON file as an argument to the script:
 
 ```bash
-python -m graphedexcel <path_to_excel_file> --config <path to grap_settings.json>
+python -m graphedexcel myexcel.xlsx --config graph_settings.json
 ```
 
 This will render the graph using the custom settings defined in the JSON file.
@@ -186,16 +203,3 @@ Just run pytest in the root folder.
 ```bash
 pytest
 ```
-
-## Contribute
-
-Feel free to contribute by opening an issue or a pull request.
-
-You can help with the following, that I have thought of so far:
-
-- Add more tests
-- Improve the code
-- Add more features
-- Improve the visualization and the ease of configuration
-- Add more examples
-- Add more documentation
