@@ -64,9 +64,10 @@ python -m graphedexcel <path_to_excel_file>
 ### Parameters from `--help`
 
 ```
-usage: graphedexcel [-h] [--remove-unconnected] [--as-directed-graph] [--no-visualize]
-                    [--layout {spring,circular,kamada_kawai,shell,spectral}] [--config CONFIG]
-                    [--output-path OUTPUT_PATH] [--open-image]
+usage: graphedexcel [-h] [--as-directed-graph] [--no-visualize]
+                    [--layout {spring,circular,kamada_kawai,shell,spectral}]
+                    [--config CONFIG] [--output-path OUTPUT_PATH]
+                    [--open-image]
                     path_to_excel
 
 Process an Excel file to build and visualize dependency graphs.
@@ -76,17 +77,18 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
-  --remove-unconnected, -r
-                        Remove unconnected nodes from the dependency graph.
   --as-directed-graph, -d
                         Treat the dependency graph as directed.
-  --no-visualize, -n    Skip the visualization of the dependency graph.
-  --layout,-l {spring,circular,kamada_kawai,shell,spectral}
-                        Layout algorithm for graph visualization (default: spring).
-  --config CONFIG, -c CONFIG
-                        Path to the configuration file for visualization. See README for details.
-  --output-path OUTPUT_PATH, -o OUTPUT_PATH
-                        Specify the output path for the generated graph image.
+  --no-visualize, -n    Skip the visualization of the dependency
+                        graph.
+  --layout, -l {spring,circular,kamada_kawai,shell,spectral}
+                        Layout algorithm for graph visualization
+                        (default: spring).
+  --config, -c CONFIG   Path to the configuration file for
+                        visualization. See README for details.
+  --output-path, -o OUTPUT_PATH
+                        Specify the output path for the generated
+                        graph image.
   --open-image          Open the generated image after visualization.
 ```
 
