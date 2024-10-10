@@ -56,7 +56,7 @@ def parse_arguments():
         "--config",
         "-c",
         type=str,
-        help="Path to the configuration file for visualization.",
+        help="Path to the configuration file for visualization. See README for details.",
     )
 
     parser.add_argument(

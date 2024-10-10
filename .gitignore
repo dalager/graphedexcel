@@ -163,6 +163,6 @@ cython_debug/
 venv/Lib/site-packages
 venv
 *.xlsx
-*.xlsx.png
+*.png
 combined_project.py
 plotsettings.json
