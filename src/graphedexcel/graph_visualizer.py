@@ -1,12 +1,8 @@
 import json
-
-# import matplotlib.cm as cm
 import matplotlib
 import matplotlib.patches as mpatches
 import networkx as nx
 import matplotlib.pyplot as plt
-import sys
-
 import logging
 
 logger = logging.getLogger(__name__)

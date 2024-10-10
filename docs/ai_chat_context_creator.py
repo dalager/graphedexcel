@@ -1,6 +1,3 @@
-import os
-
-
 def combine_python_files(file_list, output_file):
     """
     Combines multiple Python files into a single file with comments indicating
