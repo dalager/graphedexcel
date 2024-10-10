@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.12"]
 
     steps:
       # 1. Check out the repository
@@ -76,21 +76,15 @@ jobs:
       - name: Test with pytest
         run: |
           pytest --junitxml=reports/junit.xml --cov=graphedexcel --cov-report=xml
-        env:
-          # Optional: Set environment variables if needed
-          PYTHONPATH: .
 
       # 11. Upload test coverage to Codecov (Optional)
-      - name: Upload Coverage to Codecov
-        if: always()
-        uses: codecov/codecov-action@v3
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v4
         with:
-          files: ./reports/coverage.xml
-          flags: unittests
-          name: codecov-umbrella
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
 
-      # 12. Upload Test Reports (Optional)
+          # 12. Upload Test Reports (Optional)
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v3
