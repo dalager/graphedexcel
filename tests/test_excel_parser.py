@@ -1,5 +1,5 @@
 import pytest
-from src.graphedexcel.excel_parser import extract_references
+from graphedexcel.excel_parser import extract_references
 
 
 # Helper function to assert references
