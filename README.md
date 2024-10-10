@@ -203,16 +203,3 @@ Just run pytest in the root folder.
 ```bash
 pytest
 ```
-
-## Contribute
-
-Feel free to contribute by opening an issue or a pull request.
-
-You can help with the following, that I have thought of so far:
-
-- Add more tests
-- Improve the code
-- Add more features
-- Improve the visualization and the ease of configuration
-- Add more examples
-- Add more documentation
