@@ -11,6 +11,7 @@ def print_summary(graph, functionsdict):
     print_basic_info(graph, strpadsize, numpadsize)
     print_highest_degree_nodes(graph, strpadsize, numpadsize)
     print_most_used_functions(functionsdict, strpadsize, numpadsize)
+    print()
 
 
 def print_basic_info(graph, strpadsize, numpadsize):

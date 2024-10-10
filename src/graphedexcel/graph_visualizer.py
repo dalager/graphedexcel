@@ -142,8 +142,7 @@ def get_node_colors_and_legend(graph: nx.DiGraph, cmap_id: str) -> tuple[list, l
 
 def visualize_dependency_graph(
     graph: nx.DiGraph,
-    file_path: str,
-    output_path: str,
+    output_path: str = None,
     config_path: str = None,
     layout: str = "spring",
 ):

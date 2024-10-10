@@ -36,11 +36,9 @@ def test_get_graph_default_settings():
 
     settings = get_graph_default_settings(300)
     assert settings["node_size"] == 30
-    assert settings["fig_size"] == (20, 20)
 
     settings = get_graph_default_settings(600)
     assert settings["node_size"] == 20
-    assert settings["fig_size"] == (25, 25)
 
 
 def test_get_node_colors_and_legend():

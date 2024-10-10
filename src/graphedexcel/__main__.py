@@ -49,9 +49,7 @@ if __name__ == "__main__":
         output_index = sys.argv.index("--output-path")
         filename = sys.argv[output_index + 1]
 
-    visualize_dependency_graph(
-        dependency_graph, path_to_excel, filename, config_path, layout
-    )
+    visualize_dependency_graph(dependency_graph, filename, config_path, layout)
 
     # Open the image file
     if "--open-image" in sys.argv:
