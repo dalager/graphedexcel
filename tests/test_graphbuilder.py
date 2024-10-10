@@ -101,16 +101,6 @@ def test_add_node():
 
 
 @pytest.fixture
-def mock_workbook():
-    """
-    Fixture to create a mock workbook with sheets and cells.
-    """
-    mock_wb = MagicMock()
-    mock_wb.sheetnames = ["Sheet1", "Sheet2"]
-    return mock_wb
-
-
-@pytest.fixture
 def create_excel_file(tmp_path):
     def _create_excel_file(data):
         file_path = tmp_path / "test.xlsx"

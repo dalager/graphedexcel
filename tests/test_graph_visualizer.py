@@ -1,4 +1,5 @@
 import json
+import logging
 from graphedexcel.graph_visualizer import (
     merge_configs,
     load_json_config,
@@ -77,7 +78,8 @@ def test_invalid_config_path_will_not_break(tmp_path, caplog):
     G = create_two_node_graph()
 
     file_path = tmp_path / "test_graph"
-    visualize_dependency_graph(G, str(file_path), config_path="invalid_path.json")
+    with caplog.at_level(logging.ERROR):
+        visualize_dependency_graph(G, str(file_path), config_path="invalid_path.json")
     assert "Config file not found" in caplog.text
     assert file_path.with_suffix(".png").exists()
 
@@ -95,6 +97,7 @@ def test_invalid_json_in_config_will_not_break(tmp_path, caplog):
         f.write(data[1:])
     file_path = tmp_path / "test_graph"
     visualize_dependency_graph(G, str(file_path), config_path=config_file)
+    print(caplog)
     assert "Invalid JSON format in config file" in caplog.text
     assert file_path.with_suffix(".png").exists()
 
