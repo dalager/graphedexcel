@@ -1,6 +1,11 @@
 # Graphed Excel
 
-![Python Version](https://img.shields.io/badge/python-3.10-blue) ![Python Version](https://img.shields.io/badge/python-3.11-blue) ![Python Version](https://img.shields.io/badge/python-3.12-blue) [![codecov](https://codecov.io/github/dalager/graphedexcel/branch/main/graph/badge.svg?token=CJM0EAUF9M)](https://codecov.io/github/dalager/graphedexcel)
+[![current release version](https://img.shields.io/github/release/dalager/graphedexcel.svg?style=flat-square)](https://github.com/dalager/graphedexcel/releases)
+[![pypi version](https://img.shields.io/pypi/v/graphedexcel.svg?style=flat-square)](https://pypi.python.org/pypi/graphedexcel)
+![Python Version](https://img.shields.io/badge/python-3.10%3A3.12-blue?style=flat-square)
+[![codecov](https://codecov.io/github/dalager/graphedexcel/branch/main/graph/badge.svg?token=CJM0EAUF9M)](https://codecov.io/github/dalager/graphedexcel)
+
+
 
 <img src="docs/images/Book1.xlsx.png" align="right" width="300" alt="Plot from Example Book1.xlsx file">
 
