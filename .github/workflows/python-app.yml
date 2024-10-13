@@ -89,5 +89,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: junit-test-report
+          name: dist-${{ matrix.python-version }}-junit-test-report
           path: reports/junit.xml
