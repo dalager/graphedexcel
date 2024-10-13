@@ -28,7 +28,7 @@ jobs:
 
       # 3. Cache pip dependencies based on pyproject.toml and setup.cfg (if any)
       - name: Cache pip
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml', '**/setup.cfg') }}
@@ -47,7 +47,7 @@ jobs:
 
       # 6. Cache test dependencies
       - name: Cache test dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-test-${{ hashFiles('**/pyproject.toml') }}

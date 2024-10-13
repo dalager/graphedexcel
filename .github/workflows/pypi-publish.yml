@@ -3,6 +3,8 @@ name: Upload Python Package
 on:
   release:
     types: [published]
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
 
 permissions:
   contents: read
