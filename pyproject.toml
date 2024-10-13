@@ -20,7 +20,7 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "black==21.9b0",
+  "black==24.10.0",
   "pytest==8.3",
   "pytest-cov>=3.0.0", # Added for coverage reporting
   "flake8>=6.0.0",     # Ensure flake8 is included here for consistency
