@@ -166,3 +166,4 @@ venv
 *.png
 combined_project.py
 plotsettings.json
+reports
