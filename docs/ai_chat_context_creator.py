@@ -1,3 +1,6 @@
+import os
+
+
 def combine_python_files(file_list, output_file):
     """
     Combines multiple Python files into a single file with comments indicating
@@ -21,12 +24,13 @@ def combine_python_files(file_list, output_file):
 
 if __name__ == "__main__":
     # Replace these with your actual file names
+
+    # List of Python files to combine, all .py files in the src/graphedexcel directory, not subdirectories
     python_files = [
-        "src/graphedexcel/__main__.py",
-        "src/graphedexcel/graphbuilder.py",
-        "src/graphedexcel/graph_visualizer.py",
-        "src/graphedexcel/graph_summarizer.py",
-        "src/graphedexcel/excel_parser.py",
+        f"src/graphedexcel/{f}"
+        for f in os.listdir("src/graphedexcel")
+        if f.endswith(".py")
     ]
+
     output_filename = "combined_project.py"
     combine_python_files(python_files, output_filename)
