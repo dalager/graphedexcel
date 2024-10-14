@@ -26,24 +26,27 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      # 3. Cache pip dependencies based on pyproject.toml and setup.cfg (if any)
-      - name: Cache pip
+      # 3. Install Poetry
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.local/bin:$PATH"
+
+      # 4. Cache Poetry dependencies
+      - name: Cache Poetry
         uses: actions/cache@v4
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml', '**/setup.cfg') }}
+          path: |
+            ~/.cache/pypoetry
+            ~/.local/share/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pip-
+            ${{ runner.os }}-poetry-
 
-      # 4. Install build requirements
-      - name: Install build requirements
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-
-      # 5. Install project dependencies
+      # 5. Install project dependencies using Poetry
       - name: Install dependencies
         run: |
-          pip install .
+          poetry install
 
       # 6. Cache test dependencies
       - name: Cache test dependencies
@@ -54,10 +57,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-test-
 
-      # 7. Install test and lint dependencies
-      - name: Install test and lint dependencies
+      # 7. Lint deps
+      - name: Install lint dependencies
         run: |
-          pip install .[test]
           pip install flake8
 
       # 8. Lint with flake8 - Errors
@@ -75,7 +77,7 @@ jobs:
       # 10. Run tests with pytest
       - name: Test with pytest
         run: |
-          pytest --junitxml=reports/junit.xml --cov=graphedexcel --cov-report=xml
+          poetry run pytest --junitxml=reports/junit.xml --cov=graphedexcel --cov-report=xml
 
       # 11. Upload test coverage to Codecov (Optional)
       - name: Upload results to Codecov
