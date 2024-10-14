@@ -1,50 +1,3 @@
-[project]
-name = "graphedexcel"
-version = "0.0.0" # set in build pipeline
-authors = [{ name = "Christian Dalager", email = "christian@dalager.com" }]
-description = "Tool to analyze and visualize dependencies between cells in Excel spreadsheets"
-readme = "README.md"
-requires-python = ">=3.10"
-classifiers = [
-  "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent",
-]
-
-dependencies = [
-  "networkx>=3.3",
-  "openpyxl>=3.1",
-  "matplotlib>=3.9",
-  "scipy>=1.14",
-]
-
-[project.optional-dependencies]
-test = [
-  "black==24.10.0",
-  "pytest==8.3",
-  "pytest-cov>=3.0.0", # Added for coverage reporting
-  "flake8>=6.0.0",     # Ensure flake8 is included here for consistency
-  "codecov>=2.1.11",   # (Optional) If you intend to use Codecov's Python package]
-]
-[project.urls]
-Homepage = "https://github.com/dalager/graphedexcel"
-Issues = "https://github.com/dalager/graphedexcel/issues"
-
-
-# [build-system]
-# requires = ["setuptools", "wheel"]
-# build-backend = "setuptools.build_meta"
-
-
-# [tool.pytest.ini_options]
-# minversion = "8.0"
-# addopts = "-ra --cov=graphedexcel --cov-report=xml --cov-report=term"
-# testpaths = ["tests"]
-
-[tool.pytest.ini_options]
-minversion = "8.0"
-addopts = "-ra --cov=graphedexcel --cov-report=xml --cov-report=term"
-
 [tool.poetry]
 name = "graphedexcel"
 version = "0.0.0" # set in build pipeline
@@ -79,3 +32,7 @@ codecov = ">=2.1.11"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra --cov=graphedexcel --cov-report=xml --cov-report=term"
