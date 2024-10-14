@@ -31,12 +31,51 @@ Homepage = "https://github.com/dalager/graphedexcel"
 Issues = "https://github.com/dalager/graphedexcel/issues"
 
 
-[build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+# [build-system]
+# requires = ["setuptools", "wheel"]
+# build-backend = "setuptools.build_meta"
 
+
+# [tool.pytest.ini_options]
+# minversion = "8.0"
+# addopts = "-ra --cov=graphedexcel --cov-report=xml --cov-report=term"
+# testpaths = ["tests"]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
 addopts = "-ra --cov=graphedexcel --cov-report=xml --cov-report=term"
-testpaths = ["tests"]
+
+[tool.poetry]
+name = "graphedexcel"
+version = "0.0.0" # set in build pipeline
+description = "Tool to analyze and visualize dependencies between cells in Excel spreadsheets"
+authors = ["Christian Dalager <christian@dalager.com>"]
+readme = "README.md"
+homepage = "https://github.com/dalager/graphedexcel"
+repository = "https://github.com/dalager/graphedexcel"
+documentation = "https://github.com/dalager/graphedexcel"
+keywords = ["excel", "graph", "dependencies", "visualization"]
+license = "MIT"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+networkx = ">=3.3"
+openpyxl = ">=3.1"
+matplotlib = ">=3.9"
+scipy = ">=1.14"
+
+[tool.poetry.dev-dependencies]
+black = "24.10.0"
+pytest = "8.3"
+pytest-cov = ">=3.0.0"
+flake8 = ">=6.0.0"
+codecov = ">=2.1.11"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
