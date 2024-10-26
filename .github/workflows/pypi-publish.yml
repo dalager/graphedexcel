@@ -36,10 +36,7 @@ jobs:
           echo "release_version=$VERSION" >> $GITHUB_ENV
 
       - name: Install Poetry
-        run: |
-          POETRY_VERSION=1.8.4
-          curl -sSL https://install.python-poetry.org | python3 - --version $POETRY_VERSION
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        run: pipx install poetry==1.8.4
 
       - name: Update version in pyproject.toml
         run: |
