@@ -5,17 +5,17 @@ updates:
     schedule:
       interval: "daily" 
     open-pull-requests-limit: 5 
-    # Optional: Automerge updated dependencies if tests pass
-    # automerge:
-    #   enable: true
-    #   # Optionally specify rules for automerging
-    #   # Example: Automerge only patch updates
-    #   rules:
-    #     - match:
-    #         update-type: "version-update:semver-patch"
-    #       automerge: true
-    # labels:
-    #   - "dependencies" # Label for Dependabot PRs
-    # commit-message:
-    #   prefix: "deps" # Prefix for commit messages
-    #   include: "scope" # Include scope in commit messages if applicable
+    Optional: Automerge updated dependencies if tests pass
+    automerge:
+      enable: true
+      # Optionally specify rules for automerging
+      # Example: Automerge only patch updates
+      rules:
+        - match:
+            update-type: "version-update:semver-patch"
+          automerge: true
+    labels:
+      - "dependencies" # Label for Dependabot PRs
+    commit-message:
+      prefix: "deps" # Prefix for commit messages
+      include: "scope" # Include scope in commit messages if applicable
