@@ -29,8 +29,9 @@ jobs:
       # 3. Install Poetry
       - name: Install Poetry
         run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="$HOME/.local/bin:$PATH"
+          POETRY_VERSION=1.8.4
+          curl -sSL https://install.python-poetry.org | python3 - --version $POETRY_VERSION
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       # 4. Cache Poetry dependencies
       - name: Cache Poetry
@@ -57,36 +58,31 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-test-
 
-      # 7. Lint deps
-      - name: Install lint dependencies
-        run: |
-          pip install flake8
-
-      # 8. Lint with flake8 - Errors
+      # 7. Lint with flake8 - Errors
       - name: Lint with flake8 (Errors)
         run: |
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         continue-on-error: false
 
-      # 9. Lint with flake8 - Warnings
+      # 8. Lint with flake8 - Warnings
       - name: Lint with flake8 (Warnings)
         run: |
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
         continue-on-error: true
 
-      # 10. Run tests with pytest
+      # 9. Run tests with pytest
       - name: Test with pytest
         run: |
           poetry run pytest --junitxml=reports/junit.xml --cov=graphedexcel --cov-report=xml
 
-      # 11. Upload test coverage to Codecov (Optional)
+      # 10. Upload test coverage to Codecov (Optional)
       - name: Upload results to Codecov
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # v4.6.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
 
-          # 12. Upload Test Reports (Optional)
+      # 11. Upload Test Reports (Optional)
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
