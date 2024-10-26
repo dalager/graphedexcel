@@ -64,7 +64,7 @@ jobs:
       # 8. Lint with flake8 - Warnings
       - name: Lint with flake8 (Warnings)
         run: |
-          poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          poetry run flake8 . --count --exit-zero --max-complexity=9 --max-line-length=127 --statistics
         continue-on-error: true
 
       # 9. Run tests with pytest
