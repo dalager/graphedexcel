@@ -12,3 +12,11 @@ You can help with the following, that I have thought of so far:
 - Add a way to determine computational complexity ie "what could slow calculations down?"-guesses
 - Add more examples
 - Add more documentation
+
+## Code Contributions
+
+- Must pass all tests
+- Must be covered by passing tests
+- Cannot decrease the test coverage
+- Must be properly documented
+- Must follow the PEP8 style guide
