@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  security-events: write
 
 jobs:
   build:
@@ -66,6 +67,12 @@ jobs:
         run: |
           poetry run flake8 . --count --exit-zero --max-complexity=9 --max-line-length=127 --statistics
         continue-on-error: true
+
+      # Security check with Bandit
+      - name: Security check with Bandit
+        uses: PyCQA/bandit-action@8a1b30610f61f3f792fe7556e888c9d7dffa52de
+        with:
+          severity: "medium"
 
       # 9. Run tests with pytest
       - name: Test with pytest
