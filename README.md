@@ -209,3 +209,12 @@ Just run pytest in the root folder.
 ```bash
 pytest
 ```
+
+### Bandit Security Tests
+
+To run the Bandit (<https://github.com/PyCQA/bandit>) security tests, you can use the following command.
+It will report on medium and high severity safety issues.
+
+```bash
+poetry run bandit -c pyproject.toml -r . -lll
+```
