@@ -19,9 +19,11 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install minimal runtime dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libopenblas-dev \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libopenblas-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Copy only what's needed
 COPY --from=builder /app/.venv /app/.venv
