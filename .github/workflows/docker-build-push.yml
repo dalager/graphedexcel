@@ -33,8 +33,7 @@ jobs:
         run: |
           echo "Release tag: ${{ github.event.release.tag_name }}"
           VERSION="${{ github.event.release.tag_name }}"
-          # VERSION="${VERSION#v}"
-          VERSION=1.2
+          VERSION="${VERSION#v}"
           echo "Version: $VERSION"
           echo "release_version=$VERSION" >> $GITHUB_ENV
 
