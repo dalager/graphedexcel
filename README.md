@@ -219,3 +219,23 @@ It will report on medium and high severity safety issues.
 ```bash
 poetry run bandit -c pyproject.toml -r . -lll
 ```
+
+## Run with Docker
+
+If you don't want to install the python dependencies on your machine, you can run the script in a Docker container. The following command will build the Docker image and run the script on the sample `docs/Book1.xlsx` file.
+
+With a powershell terminal:
+
+```powershell
+docker build -t graphedexcel .
+docker run --rm -v ${pwd}/docs:/app graphedexcel Book1.xlsx -o Dockergenerated.png
+```
+
+Or a linux terminal
+
+```bash
+docker build -t graphedexcel .
+docker run --rm -v $(pwd)/docs:/app graphedexcel Book1.xlsx -o Dockergenerated.png
+```
+
+Image will be saved in the docs folder
