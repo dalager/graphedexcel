@@ -1,5 +1,5 @@
 #
-name: Demo Push
+name: Build and push image to GHCR.io
 
 # This workflow runs when any of the following occur:
 # - A push is made to a branch called `main` or `seed`
@@ -37,7 +37,8 @@ jobs:
         run: |
           echo "Release tag: ${{ github.event.release.tag_name }}"
           VERSION="${{ github.event.release.tag_name }}"
-          VERSION="${VERSION#v}"
+          #VERSION="${VERSION#v}"
+          VERSION=1.2
           echo "Version: $VERSION"
           echo "release_version=$VERSION" >> $GITHUB_ENV
 
