@@ -94,6 +94,7 @@ options:
                         Specify the output path for the generated
                         graph image.
   --open-image          Open the generated image after visualization.
+  --hide-legends        Do not show legends in the visualization. (Default: False)
 ```
 
 ## Sample output

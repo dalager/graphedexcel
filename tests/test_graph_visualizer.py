@@ -109,6 +109,13 @@ def test_all_layouts():
         visualize_dependency_graph(G, layout=layout, output_path=layout + "_layout.png")
 
 
+def test_provided_hide_legends_override():
+    G = create_two_node_graph()
+    visualize_dependency_graph(
+        G, hide_legends_override=True, output_path="hide_legends.png"
+    )
+
+
 def test_unknown_layout_will_fallback():
     G = create_two_node_graph()
     visualize_dependency_graph(G, layout="nosuchlayout", output_path="nosuchlayout.png")

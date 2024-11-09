@@ -63,6 +63,15 @@ def parse_arguments():
         "--open-image",
         action="store_true",
         help="Open the generated image after visualization.",
+        default=False,
+    )
+
+    parser.add_argument(
+        "--hide-legends",
+        "-hl",
+        action="store_true",
+        help="Do not show legends in the visualization.",
+        default=None,
     )
 
     return parser.parse_args()
@@ -76,6 +85,8 @@ def main():
     # Check if the file exists
     if not os.path.exists(path_to_excel):
         logger.error(f"File not found: {path_to_excel}")
+        print(f"File not found: {path_to_excel}", file=sys.stderr)
+
         sys.exit(1)
 
     # Build the dependency graph and gather statistics
@@ -108,10 +119,12 @@ def main():
         filename = f"{base_name}_dependency_graph.png"
 
     # Visualize the dependency graph
-    visualize_dependency_graph(dependency_graph, filename, config_path, layout)
+    visualize_dependency_graph(
+        dependency_graph, filename, config_path, layout, args.hide_legends
+    )
 
     logger.info(f"Dependency graph image saved to {filename}.")
-
+    print(f"Dependency graph image saved to {filename}.")
     # Open the image file if requested
     if args.open_image:
         try:
