@@ -20,6 +20,7 @@ base_graph_settings = {
     "with_labels": False,  # whether to show the node labels
     "font_size": 10,  # the size of the node labels
     "cmap": "tab20b",  # the color map to use for coloring nodes
+    "hide_legends": False,  # whether to show the legend
 }
 
 # Sized-based settings for small, medium, and large graphs
@@ -146,7 +147,7 @@ def visualize_dependency_graph(
     output_path: str = None,
     config_path: str = None,
     layout: str = "spring",
-    hide_legends: bool = False,
+    hide_legends_override: bool = None,
 ):
     """
     Render the dependency graph using matplotlib and networkx.
@@ -158,6 +159,10 @@ def visualize_dependency_graph(
     logger.info(
         f"Using the following settings for the graph visualization: {graph_settings}"
     )
+
+    hide_legends = graph_settings.pop("hide_legends")
+    if hide_legends_override is not None:
+        hide_legends = hide_legends_override
 
     fig_size = calculate_fig_size(len(graph.nodes))
     logger.info(f"Calculated figure size: {fig_size}")
@@ -195,6 +200,7 @@ def visualize_dependency_graph(
         node_color=node_colors,
         **graph_settings,
     )
+
     if not hide_legends:
         plt.legend(handles=legend_patches, title="Sheets", loc="upper left")
 

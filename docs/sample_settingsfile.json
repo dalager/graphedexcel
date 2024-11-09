@@ -1,0 +1,8 @@
+{
+  "node_size": 40,
+  "edge_color": "blue",
+  "with_labels": true,
+  "font_size": 12,
+  "alpha": 0.6,
+  "hide_legends": false
+}

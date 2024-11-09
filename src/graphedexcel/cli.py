@@ -68,9 +68,10 @@ def parse_arguments():
 
     parser.add_argument(
         "--hide-legends",
+        "-hl",
         action="store_true",
-        help="Do not show legends in the visualization. (Default: False)",
-        default=False,
+        help="Do not show legends in the visualization.",
+        default=None,
     )
 
     return parser.parse_args()
