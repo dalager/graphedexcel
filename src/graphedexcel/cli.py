@@ -63,6 +63,14 @@ def parse_arguments():
         "--open-image",
         action="store_true",
         help="Open the generated image after visualization.",
+        default=False,
+    )
+
+    parser.add_argument(
+        "--hide-legends",
+        action="store_true",
+        help="Do not show legends in the visualization. (Default: False)",
+        default=False,
     )
 
     return parser.parse_args()
@@ -108,7 +116,9 @@ def main():
         filename = f"{base_name}_dependency_graph.png"
 
     # Visualize the dependency graph
-    visualize_dependency_graph(dependency_graph, filename, config_path, layout)
+    visualize_dependency_graph(
+        dependency_graph, filename, config_path, layout, args.hide_legends
+    )
 
     logger.info(f"Dependency graph image saved to {filename}.")
 

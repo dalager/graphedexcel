@@ -146,6 +146,7 @@ def visualize_dependency_graph(
     output_path: str = None,
     config_path: str = None,
     layout: str = "spring",
+    hide_legends: bool = False,
 ):
     """
     Render the dependency graph using matplotlib and networkx.
@@ -194,8 +195,8 @@ def visualize_dependency_graph(
         node_color=node_colors,
         **graph_settings,
     )
-
-    plt.legend(handles=legend_patches, title="Sheets", loc="upper left")
+    if not hide_legends:
+        plt.legend(handles=legend_patches, title="Sheets", loc="upper left")
 
     plt.savefig(output_path, bbox_inches="tight")
     plt.close()  # Close the figure to free memory
