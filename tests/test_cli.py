@@ -1,3 +1,5 @@
+import os
+import tempfile
 from openpyxl import Workbook
 import pytest
 import sys
@@ -36,12 +38,30 @@ def test_main_with_nonexistent_file(capsys):
     with patch("sys.argv", test_args):
         with pytest.raises(SystemExit) as exc_info:
             main()
-            # Check that the exit code is non-zero
         assert exc_info.value.code != 0
-    # Capture the stderr output
-
     captured = capsys.readouterr()
     assert "File not found:" in captured.err
+
+
+def test_main_with_test_xlsx_file(capsys):
+    """Test main with a test excel file to exercise the cli module"""
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp_file:
+        test_file_path = tmp_file.name
+        try:
+            wb = Workbook()
+            ws = wb.active
+            ws["A1"] = "Test Data"
+
+            wb.save(test_file_path)
+            wb.close()
+            test_args = ["graphedexcel", test_file_path]
+            with patch("sys.argv", test_args):
+                main()
+        finally:
+            print("here")
+            wb.close()
+    captured = capsys.readouterr()
+    assert "Dependency graph image saved" in captured.out
 
 
 def test_parse_arguments_required(monkeypatch):

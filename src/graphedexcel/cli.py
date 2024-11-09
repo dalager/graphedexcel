@@ -124,7 +124,7 @@ def main():
     )
 
     logger.info(f"Dependency graph image saved to {filename}.")
-
+    print(f"Dependency graph image saved to {filename}.")
     # Open the image file if requested
     if args.open_image:
         try:
