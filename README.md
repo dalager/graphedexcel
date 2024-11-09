@@ -228,14 +228,7 @@ With a powershell terminal:
 
 ```powershell
 docker build -t graphedexcel .
-docker run --rm -v ${pwd}:/app graphedexcel docs/Book1.xlsx -o Dockergenerated.png
-```
-
-Or a linux terminal
-
-```bash
-docker build -t graphedexcel .
-docker run --rm -v $(pwd)/docs:/app graphedexcel Book1.xlsx -o Dockergenerated.png
+docker run --rm -v ${pwd}/docs:/app/docs graphedexcel docs/Book1.xlsx -o docs/av.png
 ```
 
 Image will be saved in the docs folder

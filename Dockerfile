@@ -1,26 +1,22 @@
-FROM python:3.12-slim
+FROM python:3.11-slim AS builder
+RUN pip install --no-cache-dir poetry==1.8.4
 
-
-RUN apt-get update && apt-get install -y curl && \
-    curl -sSL https://install.python-poetry.org | python3 - && \
-    ln -s /root/.local/bin/poetry /usr/local/bin/poetry && \
-    apt-get purge -y curl && apt-get clean
-
-
-# Set the working directory
 WORKDIR /app
 
-# Install poetry
-#RUN pipx install poetry==1.8.4
-
-# Copy the pyproject.toml and poetry.lock files
 COPY pyproject.toml poetry.lock ./
-COPY . .
-# Install the dependencies
-RUN poetry install --no-dev
 
-# Copy the rest of the application code
+RUN poetry config virtualenvs.create true && \
+    poetry config virtualenvs.in-project true
+
+COPY . .
+
+# Install your package
+RUN poetry install --only main --no-interaction --no-ansi
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+RUN ln -s /app/.venv/bin/graphedexcel /usr/local/bin/graphedexcel
 
 
 # Set the entry point to call graphedexcel using poetry
-ENTRYPOINT ["poetry", "run", "graphedexcel"]
+ENTRYPOINT ["graphedexcel"]
