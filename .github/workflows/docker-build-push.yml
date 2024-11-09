@@ -1,0 +1,66 @@
+#
+name: Build and push image to GHCR.io
+
+# This workflow runs when any of the following occur:
+# - A push is made to a branch called `main` or `seed`
+# - A tag starting with "v" is created
+# - A pull request is created or updated
+on:
+  release:
+    types: [published]
+env:
+  IMAGE_NAME: graphedexcel
+
+jobs:
+  # This pushes the image to GitHub Packages.
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Extract version from release tag
+        id: get_version
+        run: |
+          echo "Release tag: ${{ github.event.release.tag_name }}"
+          VERSION="${{ github.event.release.tag_name }}"
+          # VERSION="${VERSION#v}"
+          VERSION=1.2
+          echo "Version: $VERSION"
+          echo "release_version=$VERSION" >> $GITHUB_ENV
+
+      - name: Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          [ "$VERSION" == "main" ] && VERSION=latest
+
+          # Use release_version if set, otherwise use git ref
+          if [ -z "${{ env.release_version }}" ]; then
+            VERSION=$VERSION
+          else
+            VERSION=${{ env.release_version }}
+          fi
+
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+
+          # Tag both version and latest
+          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:latest
+
+          # Push both tags
+          docker push $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:latest
