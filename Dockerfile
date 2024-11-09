@@ -1,4 +1,9 @@
 FROM python:3.11-slim AS builder
+
+LABEL org.opencontainers.image.source=https://github.com/dalager/graphedexcel
+LABEL org.opencontainers.image.description="Graphedexcel will take an Excel file and create a graph datastructure and a visualisation of the graph."
+LABEL org.opencontainers.image.licenses=MIT
+
 RUN pip install --no-cache-dir poetry==1.8.4
 
 WORKDIR /app
