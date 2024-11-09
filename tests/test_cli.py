@@ -1,9 +1,47 @@
+from openpyxl import Workbook
 import pytest
 import sys
 
 # from argparse import Namespace
 from graphedexcel.cli import parse_arguments, main
 from unittest.mock import patch, MagicMock
+
+
+@pytest.fixture
+def create_excel_file(tmp_path):
+    def _create_excel_file(data):
+        file_path = tmp_path / "test.xlsx"
+        wb = Workbook()
+        for sheet_name, sheet_data in data.items():
+            ws = wb.create_sheet(title=sheet_name)
+            for row in sheet_data:
+                ws.append(row)
+        wb.save(file_path)
+        return file_path
+
+    return _create_excel_file
+
+
+# test cli.main
+def test_main():
+    # assert that main with no arguments raises SystemExit error
+    test_args = ["graphedexcel"]
+    with patch("sys.argv", test_args):
+        with pytest.raises(SystemExit):
+            main()
+
+
+def test_main_with_nonexistent_file(capsys):
+    test_args = ["graphedexcel", "nonexistent_file.xlsx"]
+    with patch("sys.argv", test_args):
+        with pytest.raises(SystemExit) as exc_info:
+            main()
+            # Check that the exit code is non-zero
+        assert exc_info.value.code != 0
+    # Capture the stderr output
+
+    captured = capsys.readouterr()
+    assert "File not found:" in captured.err
 
 
 def test_parse_arguments_required(monkeypatch):
@@ -20,12 +58,19 @@ def test_parse_arguments_optional_flags():
     """
     Test that optional flags are parsed correctly.
     """
-    test_args = ["graphedexcel", "test.xlsx", "--as-directed-graph", "--no-visualize"]
+    test_args = [
+        "graphedexcel",
+        "test.xlsx",
+        "--as-directed-graph",
+        "--no-visualize",
+        "--hide-legends",
+    ]
     with patch("sys.argv", test_args):
         args = parse_arguments()
         assert args.path_to_excel == "test.xlsx"
         assert args.as_directed_graph is True
         assert args.no_visualize is True
+        assert args.hide_legends is True
 
 
 def test_parse_arguments_optional_arguments():
@@ -65,6 +110,7 @@ def test_parse_arguments_default_values():
         assert args.as_directed_graph is False
         assert args.no_visualize is False
         assert args.open_image is False
+        assert args.hide_legends is None
 
 
 def test_parse_arguments_invalid():

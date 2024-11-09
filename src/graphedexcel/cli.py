@@ -85,6 +85,8 @@ def main():
     # Check if the file exists
     if not os.path.exists(path_to_excel):
         logger.error(f"File not found: {path_to_excel}")
+        print(f"File not found: {path_to_excel}", file=sys.stderr)
+
         sys.exit(1)
 
     # Build the dependency graph and gather statistics
