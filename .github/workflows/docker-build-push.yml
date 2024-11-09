@@ -6,10 +6,6 @@ name: Build and push image to GHCR.io
 # - A tag starting with "v" is created
 # - A pull request is created or updated
 on:
-  push:
-    branches:
-      - main
-      - Dockerize
   release:
     types: [published]
 env:
