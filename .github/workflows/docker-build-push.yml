@@ -14,7 +14,7 @@ on:
     types: [published]
 env:
   IMAGE_NAME: graphedexcel
-#
+
 jobs:
   # This pushes the image to GitHub Packages.
   push:
@@ -22,7 +22,7 @@ jobs:
     permissions:
       packages: write
       contents: read
-      #
+
     steps:
       - uses: actions/checkout@v4
 
@@ -37,7 +37,7 @@ jobs:
         run: |
           echo "Release tag: ${{ github.event.release.tag_name }}"
           VERSION="${{ github.event.release.tag_name }}"
-          #VERSION="${VERSION#v}"
+          # VERSION="${VERSION#v}"
           VERSION=1.2
           echo "Version: $VERSION"
           echo "release_version=$VERSION" >> $GITHUB_ENV
@@ -45,26 +45,26 @@ jobs:
       - name: Push image
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-
-          # This changes all uppercase characters to lowercase.
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # This strips the git ref prefix from the version.
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # This strips the "v" prefix from the tag name.
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
           [ "$VERSION" == "main" ] && VERSION=latest
 
-
-          echo IMAGE_ID=$IMAGE_ID
-          # if env.release_version is not set, use the git ref
+          # Use release_version if set, otherwise use git ref
           if [ -z "${{ env.release_version }}" ]; then
             VERSION=$VERSION
           else
             VERSION=${{ env.release_version }}
           fi
 
+          echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
+
+          # Tag both version and latest
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker tag $IMAGE_NAME $IMAGE_ID:latest
+
+          # Push both tags
           docker push $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:latest
