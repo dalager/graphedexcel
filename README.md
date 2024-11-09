@@ -228,7 +228,7 @@ With a powershell terminal:
 
 ```powershell
 docker build -t graphedexcel .
-docker run --rm -v ${pwd}/docs:/app graphedexcel Book1.xlsx -o Dockergenerated.png
+docker run --rm -v ${pwd}:/app graphedexcel docs/Book1.xlsx -o Dockergenerated.png
 ```
 
 Or a linux terminal
