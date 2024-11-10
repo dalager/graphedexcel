@@ -2,11 +2,8 @@ import os
 import tempfile
 from openpyxl import Workbook
 import pytest
-import sys
-
-# from argparse import Namespace
 from graphedexcel.cli import parse_arguments, main
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 @pytest.fixture
@@ -54,9 +51,11 @@ def test_main_with_test_xlsx_file(capsys):
 
             wb.save(test_file_path)
             wb.close()
-            test_args = ["graphedexcel", test_file_path]
+            test_args = ["graphedexcel", test_file_path, "-o", "output.png"]
             with patch("sys.argv", test_args):
                 main()
+            os.remove("output.png")
+
         finally:
             print("here")
             wb.close()

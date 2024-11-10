@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from graphedexcel.graph_visualizer import (
     merge_configs,
     load_json_config,
@@ -60,6 +61,10 @@ def test_visualize_dependency_graph(tmp_path):
     visualize_dependency_graph(G, str(file_path))
 
     assert file_path.with_suffix(".png").exists()
+    try:
+        os.remove(file_path)
+    except FileNotFoundError:
+        print(f"File {file_path} not found")
 
 
 def test_provided_config_path(tmp_path):
@@ -72,6 +77,11 @@ def test_provided_config_path(tmp_path):
 
     file_path = tmp_path / "test_graph"
     visualize_dependency_graph(G, str(file_path), config_path=config_file)
+    try:
+        os.remove(file_path)
+        os.remove(config_file)
+    except FileNotFoundError:
+        print(f"File {file_path} not found")
 
 
 def test_invalid_config_path_will_not_break(tmp_path, caplog):
@@ -82,6 +92,10 @@ def test_invalid_config_path_will_not_break(tmp_path, caplog):
         visualize_dependency_graph(G, str(file_path), config_path="invalid_path.json")
     assert "Config file not found" in caplog.text
     assert file_path.with_suffix(".png").exists()
+    try:
+        os.remove(file_path)
+    except FileNotFoundError:
+        print(f"File {file_path} not found")
 
 
 def test_invalid_json_in_config_will_not_break(tmp_path, caplog):
@@ -100,25 +114,42 @@ def test_invalid_json_in_config_will_not_break(tmp_path, caplog):
     print(caplog)
     assert "Invalid JSON format in config file" in caplog.text
     assert file_path.with_suffix(".png").exists()
+    try:
+        file_path.unlink()
+    except FileNotFoundError:
+        pass
 
 
 def test_all_layouts():
     G = create_two_node_graph()
 
     for layout in ["spring", "kamada_kawai", "circular", "shell", "spectral"]:
-        visualize_dependency_graph(G, layout=layout, output_path=layout + "_layout.png")
+        file_path = f"{layout}.png"
+        visualize_dependency_graph(G, layout=layout, output_path=file_path)
+        try:
+            os.remove(file_path)
+        except FileNotFoundError:
+            print(f"File {file_path} not found")
 
 
 def test_provided_hide_legends_override():
     G = create_two_node_graph()
-    visualize_dependency_graph(
-        G, hide_legends_override=True, output_path="hide_legends.png"
-    )
+    file_path = "hide_legends.png"
+    visualize_dependency_graph(G, hide_legends_override=True, output_path=file_path)
+    try:
+        os.remove(file_path)
+    except FileNotFoundError:
+        print(f"File {file_path} not found")
 
 
 def test_unknown_layout_will_fallback():
     G = create_two_node_graph()
-    visualize_dependency_graph(G, layout="nosuchlayout", output_path="nosuchlayout.png")
+    file_path = "nosuchlayout.png"
+    visualize_dependency_graph(G, layout="nosuchlayout", output_path=file_path)
+    try:
+        os.remove(file_path)
+    except FileNotFoundError:
+        print(f"File {file_path} not found")
 
 
 def create_two_node_graph():

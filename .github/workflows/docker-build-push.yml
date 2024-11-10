@@ -1,10 +1,4 @@
-#
 name: Build and push image to GHCR.io
-
-# This workflow runs when any of the following occur:
-# - A push is made to a branch called `main` or `seed`
-# - A tag starting with "v" is created
-# - A pull request is created or updated
 on:
   release:
     types: [published]
@@ -44,17 +38,7 @@ jobs:
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-
-          [ "$VERSION" == "main" ] && VERSION=latest
-
-          # Use release_version if set, otherwise use git ref
-          if [ -z "${{ env.release_version }}" ]; then
-            VERSION=$VERSION
-          else
-            VERSION=${{ env.release_version }}
-          fi
+          VERSION=${{ env.release_version }}
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
