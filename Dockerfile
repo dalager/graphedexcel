@@ -1,8 +1,10 @@
 FROM python:3.13-slim@sha256:751d8bece269ba9e672b3f2226050e7e6fb3f3da3408b5dcb5d415a054fcb061 AS builder
 
+RUN apt-get update && \
+    apt-get install --no-install-suggests --no-install-recommends --yes pipx
 
-RUN pip install --no-cache-dir poetry==1.8.4
-
+ENV PATH="/root/.local/bin:${PATH}"
+RUN pipx install poetry
 WORKDIR /app
 
 COPY pyproject.toml poetry.lock ./
