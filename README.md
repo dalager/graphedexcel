@@ -2,7 +2,7 @@
 
 [![current release version](https://img.shields.io/github/release/dalager/graphedexcel.svg?style=flat-square)](https://github.com/dalager/graphedexcel/releases)
 [![pypi version](https://img.shields.io/pypi/v/graphedexcel.svg?style=flat-square)](https://pypi.python.org/pypi/graphedexcel)
-![Python Version](https://img.shields.io/badge/python-3.10%3A3.12-blue?style=flat-square)
+![Python Version](https://img.shields.io/badge/python-3.10%3A3.13-blue?style=flat-square)
 [![codecov](https://codecov.io/github/dalager/graphedexcel/branch/main/graph/badge.svg?token=CJM0EAUF9M)](https://codecov.io/github/dalager/graphedexcel)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9620/badge)](https://www.bestpractices.dev/projects/9620)
 
