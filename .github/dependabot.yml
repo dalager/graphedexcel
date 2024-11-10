@@ -23,3 +23,8 @@ updates:
     commit-message:
       prefix: "Poetry Dep"
       include: "scope"
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: daily
