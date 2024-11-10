@@ -1,4 +1,4 @@
-FROM python:3.11-slim@sha256:5148c0e4bbb64271bca1d3322360ebf4bfb7564507ae32dd639322e4952a6b16 AS builder
+FROM python:3.13-slim@sha256:751d8bece269ba9e672b3f2226050e7e6fb3f3da3408b5dcb5d415a054fcb061 AS builder
 
 
 RUN pip install --no-cache-dir poetry==1.8.4
@@ -16,7 +16,7 @@ COPY . .
 RUN poetry install --only main --no-interaction --no-ansi
 
 # Runtime stage
-FROM python:3.11-slim@sha256:5148c0e4bbb64271bca1d3322360ebf4bfb7564507ae32dd639322e4952a6b16
+FROM python:3.13-slim@sha256:751d8bece269ba9e672b3f2226050e7e6fb3f3da3408b5dcb5d415a054fcb061
 
 LABEL org.opencontainers.image.source=https://github.com/dalager/graphedexcel
 LABEL org.opencontainers.image.description="Graphedexcel will take an Excel file and create a graph datastructure and a visualisation of the graph."
