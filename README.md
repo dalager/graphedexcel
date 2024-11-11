@@ -14,6 +14,50 @@ Will generate a graph of the dependencies between cells in an Excel spreadsheet.
 
 <br clear="right"/>
 
+## Usage
+
+GraphedExcel can be used in three ways:
+
+1. As python CLI tool, installed from PyPi with `pip install graphedexcel`
+2. As a Docker container, `ghcr.io/dalager/graphedexcel`, exposing the CLI tool, not requiring any python dependencies being installed.
+3. As a Python module used within your own code, by importing the `graphedexcel` module.
+
+### CLI Tool
+
+```bash
+# Install it
+pip install graphedexcel
+# Run it
+python -m graphedexcel <path_to_excel_file>
+```
+
+See the command line options below.
+
+### Docker
+
+GraphedExcel is published to <https://ghcr.io/dalager/graphedexcel> and can be run with the following command:
+
+```bash
+docker run -v $(pwd):/data ghcr.io/dalager/graphedexcel /data/myworkbook.xlsx -o /data/myworkbook.png
+```
+
+Where `myworkbook.xlsx` is sitting in the current directory and the output image will be saved as `myworkbook.png`, also in the current directory.
+
+The `-v` flag is used to mount the current directory into the container as `/data/`
+
+For powershell, use `${pwd}` instead of `$(pwd)` to get the current directory.
+
+### Python Module
+
+```python
+import graphedexcel as ge
+
+graph,stats = ge.graphbuilder.build_graph_and_stats("Book1.xlsx")
+ge.graph_summarizer.print_summary(graph, stats)
+ge.graph_visualizer.visualize_dependency_graph(graph)
+
+```
+
 ## Definitions
 
 Single-cell references in a formula sitting in cell `A3` like `=A1+A2` is considered a dependency between the node `A3` and the nodes `A2` and `A1`.
@@ -32,9 +76,9 @@ So when a cell, `C1` contains `=SUM(B1:B3)` the graph will look like this:
 ```mermaid
 
 graph TD
-    R -->B1
-    R -->B2
-    R -->B3
+    R --> B1
+    R --> B2
+    R --> B3
     R["B1:B3"]
     C1 --> R
 
@@ -42,24 +86,19 @@ graph TD
 
 ```
 
-## Installation from pypi package
+## Build and run from source
 
-PyPi project: [graphedexcel](https://pypi.org/project/graphedexcel/)
+### Prerequisites
 
-```bash
-pip install graphedexcel
-```
-
-## Installation from source
+- Python 3.10 or later
+- Poetry (<https://python-poetry.org/>)
 
 ```bash
-
-python -m venv venv
-source venv/bin/activate
-pip install -e .
+poetry install
+poetry run graphedexcel <path_to_excel_file> [options]
 ```
 
-## Usage
+## Using the CLI tool and its varous options
 
 ```bash
 python -m graphedexcel <path_to_excel_file>
@@ -208,7 +247,7 @@ This will render the graph using the custom settings defined in the JSON file.
 Just run pytest in the root folder.
 
 ```bash
-pytest
+poetry run pytest
 ```
 
 ### Bandit Security Tests
@@ -219,16 +258,3 @@ It will report on medium and high severity safety issues.
 ```bash
 poetry run bandit -c pyproject.toml -r . -lll
 ```
-
-## Run with Docker
-
-If you don't want to install the python dependencies on your machine, you can run the script in a Docker container. The following command will build the Docker image and run the script on the sample `docs/Book1.xlsx` file.
-
-With a powershell terminal:
-
-```powershell
-docker build -t graphedexcel .
-docker run --rm -v ${pwd}/docs:/app/docs graphedexcel docs/Book1.xlsx -o docs/av.png
-```
-
-Image will be saved in the docs folder
