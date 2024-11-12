@@ -1,4 +1,4 @@
-# Graphed Excel
+# Graphedexcel
 
 [![current release version](https://img.shields.io/github/release/dalager/graphedexcel.svg?style=flat-square)](https://github.com/dalager/graphedexcel/releases)
 [![pypi version](https://img.shields.io/pypi/v/graphedexcel.svg?style=flat-square)](https://pypi.python.org/pypi/graphedexcel)
@@ -8,9 +8,9 @@
 
 <img src="docs/images/Book1.xlsx.png" align="right" width="300" alt="Plot from Example Book1.xlsx file">
 
-Tool to analyze and visualize dependencies between cells in Excel spreadsheets in order to get an understanding of the complexity.
+## Overview
 
-Will generate a graph of the dependencies between cells in an Excel spreadsheet. Data extracted with `openpyxl` (<https://foss.heptapod.net/openpyxl/openpyxl>), the graph is generated with the `networkx` library (<https://networkx.org/>) and is visualized using `matplotlib`.
+Graphedexcel takes an Excel file and creates a graph data structure with a visual representation.
 
 <br clear="right"/>
 
@@ -18,9 +18,9 @@ Will generate a graph of the dependencies between cells in an Excel spreadsheet.
 
 GraphedExcel can be used in three ways:
 
-1. As python CLI tool, installed from PyPi with `pip install graphedexcel`
-2. As a Docker container, `ghcr.io/dalager/graphedexcel`, exposing the CLI tool, not requiring any python dependencies being installed.
-3. As a Python module used within your own code, by importing the `graphedexcel` module.
+1. As a Python CLI tool, installed from PyPi with `pip install graphedexcel` (requires Python)
+2. As a Docker container, `ghcr.io/dalager/graphedexcel`, exposing the CLI tool, not requiring any python dependencies being installed. (Requires Docker)
+3. As a Python module used within your own code, by importing the `graphedexcel` module. (Requires Python and some python programming experience)
 
 ### CLI Tool
 
