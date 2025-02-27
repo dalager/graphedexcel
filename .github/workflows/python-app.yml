@@ -46,7 +46,7 @@ jobs:
 
       # 4. Cache Poetry dependencies
       - name: Cache Poetry
-        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           path: |
             ~/.cache/pypoetry
@@ -62,7 +62,7 @@ jobs:
 
       # 6. Cache test dependencies
       - name: Cache test dependencies
-        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
+        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-test-${{ hashFiles('**/pyproject.toml') }}
@@ -88,7 +88,7 @@ jobs:
 
       # 10. Upload test coverage to Codecov (Optional)
       - name: Upload results to Codecov
-        uses: codecov/codecov-action@13ce06bfc6bbe3ecf90edbbf1bc32fe5978ca1d3 # v5.3.1
+        uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
@@ -96,7 +96,7 @@ jobs:
       # 11. Upload Test Reports (Optional)
       - name: Upload Test Report
         if: always()
-        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
         with:
           name: dist-${{ matrix.python-version }}-junit-test-report
           path: reports/junit.xml
