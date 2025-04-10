@@ -36,7 +36,7 @@ jobs:
 
       # 2. Set up Python environment
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+        uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -46,7 +46,7 @@ jobs:
 
       # 4. Cache Poetry dependencies
       - name: Cache Poetry
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: |
             ~/.cache/pypoetry
@@ -62,7 +62,7 @@ jobs:
 
       # 6. Cache test dependencies
       - name: Cache test dependencies
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-test-${{ hashFiles('**/pyproject.toml') }}
@@ -96,7 +96,7 @@ jobs:
       # 11. Upload Test Reports (Optional)
       - name: Upload Test Report
         if: always()
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: dist-${{ matrix.python-version }}-junit-test-report
           path: reports/junit.xml
