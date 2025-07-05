@@ -1,4 +1,4 @@
-FROM python:3.13-slim@sha256:751d8bece269ba9e672b3f2226050e7e6fb3f3da3408b5dcb5d415a054fcb061 AS builder
+FROM python:3.13-slim@sha256:21e39cf1815802d4c6f89a0d3a166cc67ce58f95b6d1639e68a394c99310d2e5 AS builder
 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes pipx
@@ -18,7 +18,7 @@ COPY . .
 RUN poetry install --only main --no-interaction --no-ansi
 
 # Runtime stage
-FROM python:3.13-slim@sha256:751d8bece269ba9e672b3f2226050e7e6fb3f3da3408b5dcb5d415a054fcb061
+FROM python:3.13-slim@sha256:21e39cf1815802d4c6f89a0d3a166cc67ce58f95b6d1639e68a394c99310d2e5
 
 LABEL org.opencontainers.image.source=https://github.com/dalager/graphedexcel
 LABEL org.opencontainers.image.description="Graphedexcel will take an Excel file and create a graph datastructure and a visualisation of the graph."
