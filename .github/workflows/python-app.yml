@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Security check with Bandit
-        uses: PyCQA/bandit-action@8a1b30610f61f3f792fe7556e888c9d7dffa52de
+        uses: PyCQA/bandit-action@67a458d90fa11fb1463e91e7f4c8f068b5863c7f
         with:
           severity: "medium"
 
